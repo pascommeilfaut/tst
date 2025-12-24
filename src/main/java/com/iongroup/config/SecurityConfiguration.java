@@ -1,8 +1,5 @@
 package com.iongroup.config;
 
-import static com.vaadin.flow.spring.security.VaadinSecurityConfigurer.vaadin;
-
-import com.iongroup.views.LoginView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +24,7 @@ public class SecurityConfiguration {
                         authorize
                                 .requestMatchers("/images/*.png").permitAll()
                                 .requestMatchers("/line-awesome/**").permitAll()
-                ).with(vaadin(), vaadin -> vaadin.loginView(LoginView.class))
+                )
                 .authenticationProvider(authenticationProvider)
                 .build();
     }
