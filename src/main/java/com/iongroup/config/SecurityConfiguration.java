@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @EnableWebSecurity
@@ -20,13 +21,14 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize ->
-                        authorize
-                                .requestMatchers("/images/*.png").permitAll()
-                                .requestMatchers("/line-awesome/**").permitAll()
+                .authorizeHttpRequests((requests) -> requests
+                        .anyRequest().authenticated()
+                ).formLogin((form) -> form
+                        .loginPage("/login")
+                        .permitAll()
                 )
+                .logout(LogoutConfigurer::permitAll)
                 .authenticationProvider(authenticationProvider)
                 .build();
     }
-
 }
