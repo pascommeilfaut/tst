@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::div})}">
+<body>
+<div>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0" th:text="${issueId != null ? 'Edit Issue #' + issueId : 'New Issue'}">Issue Form</h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/issues/save}" method="post" th:object="${issue}">
+                        <input type="hidden" name="id" th:value="${issueId}" />
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label">Point of Service (POS)</label>
+                                <select class="form-select" th:field="*{posId}" required>
+                                    <option value="">Select POS...</option>
+                                    <option th:each="pos : ${posList}" th:value="${pos.id}" th:text="${pos.name + ' (' + pos.city.name + ')'}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Issue Type</label>
+                                <select class="form-select" th:field="*{issueTypeId}" required>
+                                    <option value="">Select Type...</option>
+                                    <option th:each="type : ${types}" th:value="${type.id}" th:text="${type.name}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Subclass</label>
+                                <select class="form-select" th:field="*{subTypeId}" required>
+                                    <option value="">Select Subclass...</option>
+                                    <option th:each="sub : ${subTypes}" th:value="${sub.id}" th:text="${sub.name}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label">Problem Summary</label>
+                                <input type="text" class="form-control" th:field="*{problem}" required />
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Priority</label>
+                                <select class="form-select" th:field="*{priority}" required>
+                                    <option th:each="p : ${priorities}" th:value="${p}" th:text="${p.displayName}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" th:field="*{status}" required>
+                                    <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.displayName}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" th:field="*{problemDescription}" rows="4"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Solution</label>
+                            <textarea class="form-control" th:field="*{solution}" rows="4"></textarea>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Assigned To Group</label>
+                                <select class="form-select" th:field="*{assignedTo}">
+                                    <option value="">Unassigned</option>
+                                    <option th:each="u : ${userTypes}" th:value="${u.id}" th:text="${u.displayName}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Memo</label>
+                                <input type="text" class="form-control" th:field="*{memo}" />
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a th:href="@{/issues}" class="btn btn-light me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Issue</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

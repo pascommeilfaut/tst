@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::div})}">
+<body>
+<div>
+    <div class="card shadow-sm">
+        <div class="card-header bg-white py-3">
+            <div class="row align-items-center">
+                <div class="col">
+                    <form class="d-flex" th:action="@{/issues}" method="get">
+                        <input class="form-control me-2" type="search" placeholder="Search issues..." name="search" th:value="${param.search}">
+                        <button class="btn btn-outline-primary" type="submit">Search</button>
+                    </form>
+                </div>
+                <div class="col-auto">
+                    <a th:href="@{/issues/add}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Issue</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>POS</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Created By</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="issue : ${issues.content}">
+                        <td th:text="${issue.id}">1</td>
+                        <td>
+                            <div class="fw-bold" th:text="${issue.pos.name}">POS Name</div>
+                            <small class="text-muted" th:text="${issue.pos.city.name}">City</small>
+                        </td>
+                        <td>
+                            <span th:text="${issue.type.name}">Type</span>
+                            <br>
+                            <small class="text-muted" th:text="${issue.subType.name}">Subtype</small>
+                        </td>
+                        <td>
+                                <span class="badge rounded-pill"
+                                      th:classappend="${
+                                        issue.status.name() == 'NEW' ? 'bg-danger' :
+                                        (issue.status.name() == 'IN_PROGRESS' ? 'bg-success' :
+                                        (issue.status.name() == 'PENDING' ? 'bg-warning text-dark' : 'bg-info'))
+                                      }"
+                                      th:text="${issue.status.displayName}">Status</span>
+                        </td>
+                        <td th:text="${issue.createdBy.name}">User</td>
+                        <td th:text="${#temporals.format(issue.createdAt, 'yyyy-MM-dd HH:mm')}">Date</td>
+                        <td>
+                            <a th:href="@{/issues/edit/{id}(id=${issue.id})}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr th:if="${issues.empty}">
+                        <td colspan="7" class="text-center py-4 text-muted">No issues found.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
