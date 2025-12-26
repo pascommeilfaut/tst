@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(content=~{::div})}">
+<body>
+<div class="container-fluid" style="max-width: 800px;">
+    <h1 class="mb-4">Add User</h1>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form th:action="@{/users/save}" th:object="${userDto}" method="post">
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Login <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" th:field="*{login}"
+                               th:classappend="${#fields.hasErrors('login')} ? 'is-invalid' : ''" required>
+                        <div class="invalid-feedback" th:errors="*{login}">Error</div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Password <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" th:field="*{rawPassword}"
+                               th:classappend="${#fields.hasErrors('rawPassword')} ? 'is-invalid' : ''" required>
+                        <div class="invalid-feedback" th:errors="*{rawPassword}">Error</div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" th:field="*{name}"
+                           th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''" required>
+                    <div class="invalid-feedback" th:errors="*{name}">Error</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" th:field="*{email}"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''" required>
+                        <div class="invalid-feedback" th:errors="*{email}">Error</div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Telephone <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" th:field="*{telephone}"
+                               th:classappend="${#fields.hasErrors('telephone')} ? 'is-invalid' : ''" required>
+                        <div class="invalid-feedback" th:errors="*{telephone}">Error</div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">User Type <span class="text-danger">*</span></label>
+                    <select class="form-select" th:field="*{type}" required>
+                        <option value="">-- Select Type --</option>
+                        <option th:each="type : ${userTypes}" th:value="${type}" th:text="${type.displayName}"></option>
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="/users/browse" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(content=~{::div})}">
+<body>
+<div class="w-100">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="m-0">POS Manager</h2>
+        <a href="/pos/add" class="btn btn-primary">Add POS</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th th:replace="~{fragments/tables :: sortHeader('name', 'Name', ${posPage}, '/pos/browse')}"></th>
+                    <th th:replace="~{fragments/tables :: sortHeader('telephone', 'Telephone', ${posPage}, '/pos/browse')}"></th>
+                    <th th:replace="~{fragments/tables :: sortHeader('cellphone', 'Cellphone', ${posPage}, '/pos/browse')}"></th>
+                    <th th:replace="~{fragments/tables :: sortHeader('address', 'Address', ${posPage}, '/pos/browse')}"></th>
+                    <th th:replace="~{fragments/tables :: sortHeader('city.name', 'City', ${posPage}, '/pos/browse')}"></th>
+                    <th th:replace="~{fragments/tables :: sortHeader('model', 'Model', ${posPage}, '/pos/browse')}"></th>
+                    <th th:replace="~{fragments/tables :: sortHeader('brand', 'Brand', ${posPage}, '/pos/browse')}"></th>
+                    <th>Connection</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="pos : ${posPage.content}">
+                    <td th:text="${pos.name}"></td>
+                    <td th:text="${pos.telephone}"></td>
+                    <td th:text="${pos.cellphone}"></td>
+                    <td th:text="${pos.address}"></td>
+                    <td th:text="${pos.city.name}"></td>
+                    <td th:text="${pos.model}"></td>
+                    <td th:text="${pos.brand}"></td>
+                    <td th:text="${pos.connectionType?.displayName}"></td>
+
+                    <td th:with="count=${@issueService.countIssuesByPosId(pos.id)}">
+                                <span th:class="${count > 0 ? 'text-danger fw-bold' : 'text-success'}"
+                                      th:text="${count > 0 ? (count + ' issues') : 'No issues'}">
+                                </span>
+                    </td>
+                </tr>
+                <tr th:if="${posPage.empty}">
+                    <td colspan="9" class="text-center py-4 text-muted">No POS found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:replace="~{fragments/tables :: pagination(${posPage}, '/pos/browse')}"></div>
+    </div>
+</div>
+</body>
+</html>
