@@ -19,7 +19,7 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="/" class="nav-link" th:classappend="${#httpServletRequest.requestURI == '/' ? 'active' : ''}">
+                <a href="/" class="nav-link">
                     Dashboard
                 </a>
             </li>
@@ -37,10 +37,10 @@
                 <span class="nav-link disabled text-uppercase fw-bold mt-2">Issues</span>
             </li>
             <li>
-                <a href="/issues/add" class="nav-link" th:classappend="${#httpServletRequest.requestURI == '/issues/add' ? 'active' : ''}">Add Issue</a>
+                <a href="/issues/add" class="nav-link">Add Issue</a>
             </li>
             <li>
-                <a href="/issues/browse" class="nav-link" th:classappend="${#httpServletRequest.requestURI == '/issues/browse' ? 'active' : ''}">Browse Issues</a>
+                <a href="/issues/browse" class="nav-link">Browse Issues</a>
             </li>
 
             <li sec:authorize="hasRole('ADMIN')">
