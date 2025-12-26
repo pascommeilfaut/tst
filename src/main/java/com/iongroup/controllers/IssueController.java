@@ -2,11 +2,13 @@ package com.iongroup.controllers;
 
 import com.iongroup.data.issue.IssuePriority;
 import com.iongroup.data.issue.status.IssueStatus;
+import com.iongroup.data.user.UserEntity;
 import com.iongroup.data.user.UserType;
 import com.iongroup.service.IssueService;
 import com.iongroup.service.IssueTypeService;
 import com.iongroup.service.PosService;
 import com.iongroup.service.dto.CreateIssueDto;
+import com.iongroup.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -50,6 +52,8 @@ public class IssueController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute CreateIssueDto issueDto) {
+        UserEntity userDetails = AuthUtils.getCurrentUser();
+        issueDto.setCreatedBy(userDetails.getId());
         issueService.create(issueDto);
         return "redirect:/issues/browse";
     }
