@@ -12,14 +12,14 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                 <tr>
-                    <th th:replace="::sortHeader('id', 'Issue #')"></th>
-                    <th th:replace="::sortHeader('pos.name', 'Pos Name')"></th>
-                    <th th:replace="::sortHeader('createdBy.name', 'Created By')"></th>
-                    <th th:replace="::sortHeader('createdAt', 'Date')"></th>
-                    <th th:replace="::sortHeader('type.name', 'Type')"></th>
-                    <th th:replace="::sortHeader('status', 'Status')"></th>
-                    <th th:replace="::sortHeader('assignedTo', 'Assigned To')"></th>
-                    <th th:replace="::sortHeader('memo', 'Memo')"></th>
+                    <th th:replace="~{::sortHeader('id', 'Issue #')}"></th>
+                    <th th:replace="~{::sortHeader('pos.name', 'Pos Name')}"></th>
+                    <th th:replace="~{::sortHeader('createdBy.name', 'Created By')}"></th>
+                    <th th:replace="~{::sortHeader('createdAt', 'Date')}"></th>
+                    <th th:replace="~{::sortHeader('type.name', 'Type')}"></th>
+                    <th th:replace="~{::sortHeader('status', 'Status')}"></th>
+                    <th th:replace="~{::sortHeader('assignedTo', 'Assigned To')}"></th>
+                    <th th:replace="~{::sortHeader('memo', 'Memo')}"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -31,9 +31,9 @@
                     <td th:text="${issue.type.name}"></td>
                     <td>
                                 <span class="badge"
-                                      th:classappend="${issue.status.name() == 'NEW' ? 'bg-danger' :
-                                                        (issue.status.name() == 'PENDING' ? 'bg-warning text-dark' :
-                                                        (issue.status.name() == 'ASSIGNED' ? 'bg-primary' : 'bg-success'))}"
+                                      th:classappend="${issue.status.getValue().name() == 'NEW' ? 'bg-danger' :
+                                                        (issue.status.getValue().name() == 'PENDING' ? 'bg-warning text-dark' :
+                                                        (issue.status.getValue().name() == 'ASSIGNED' ? 'bg-primary' : 'bg-success'))}"
                                       th:text="${issue.status.value.displayName}">
                                 </span>
                     </td>
