@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(content=~{::div})}">
+<body>
+<div>
+    <h2>Issues Manager</h2>
+    <table class="table table-hover mt-3">
+        <thead>
+        <tr>
+            <th>Issue #</th>
+            <th>Pos Name</th>
+            <th>Created By</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Assigned To</th>
+            <th>Memo</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="issue : ${issues.content}">
+            <td th:text="${issue.id}"></td>
+            <td th:text="${issue.pos.name}"></td>
+            <td th:text="${issue.createdBy.name}"></td>
+            <td th:text="${issue.createdAt}"></td>
+            <td th:text="${issue.type.name}"></td>
+            <td th:text="${issue.status.value.displayName}"></td>
+            <td th:text="${issue.assignedTo != null ? issue.assignedTo.value.displayName : '-'}"></td>
+            <td th:text="${issue.memo}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation" th:if="${issues.totalPages > 0}">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${issues.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/issues/browse(page=${issues.number - 1})}">Previous</a>
+            </li>
+            <li class="page-item" th:classappend="${issues.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/issues/browse(page=${issues.number + 1})}">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

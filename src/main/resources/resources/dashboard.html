@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(content=~{::div})}">
+<body>
+<div>
+    <h1>Dashboard</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-3" th:each="entry : ${stats}">
+            <div class="card text-white mb-3"
+                 th:classappend="${entry.key.name() == 'NEW' ? 'bg-danger' : (entry.key.name() == 'PENDING' ? 'bg-warning' : (entry.key.name() == 'ASSIGNED' ? 'bg-primary' : 'bg-success'))}">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${entry.key.displayName}">Status</h5>
+                    <p class="card-text display-4" th:text="${entry.value}">0</p>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a th:href="@{/issues/browse(status=${entry.key})}" class="text-white text-decoration-none small stretched-link">View Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Recent Issues</h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>POS Name</th>
+            <th>Status</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="issue : ${recentIssues}">
+            <td th:text="${issue.id}">1</td>
+            <td th:text="${issue.pos.name}">Pos Name</td>
+            <td th:text="${issue.status.value.displayName}">New</td>
+            <td th:text="${issue.createdAt}">2023-01-01</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
