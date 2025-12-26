@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::div})}">
+<body>
+<div>
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-danger h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="display-4 fw-bold" th:text="${stats[T(com.iongroup.data.issue.status.IssueStatus).NEW] ?: 0}">0</h2>
+                        <p class="card-text">New issues</p>
+                    </div>
+                    <i class="bi bi-file-text display-4 opacity-50"></i>
+                </div>
+                <div class="card-footer bg-transparent border-0 text-end">
+                    <a th:href="@{/issues(search='NEW')}" class="text-white text-decoration-none">View Details <i class="bi bi-arrow-right-circle"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="display-4 fw-bold" th:text="${stats[T(com.iongroup.data.issue.status.IssueStatus).PENDING] ?: 0}">0</h2>
+                        <p class="card-text">Pending issues</p>
+                    </div>
+                    <i class="bi bi-hourglass-split display-4 opacity-50"></i>
+                </div>
+                <div class="card-footer bg-transparent border-0 text-end">
+                    <a th:href="@{/issues(search='PENDING')}" class="text-white text-decoration-none">View Details <i class="bi bi-arrow-right-circle"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="display-4 fw-bold" th:text="${stats[T(com.iongroup.data.issue.status.IssueStatus).ASSIGNED] ?: 0}">0</h2>
+                        <p class="card-text">Assigned issues</p>
+                    </div>
+                    <i class="bi bi-person-check display-4 opacity-50"></i>
+                </div>
+                <div class="card-footer bg-transparent border-0 text-end">
+                    <a th:href="@{/issues(search='ASSIGNED')}" class="text-white text-decoration-none">View Details <i class="bi bi-arrow-right-circle"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="display-4 fw-bold" th:text="${stats[T(com.iongroup.data.issue.status.IssueStatus).IN_PROGRESS] ?: 0}">0</h2>
+                        <p class="card-text">In Progress</p>
+                    </div>
+                    <i class="bi bi-arrow-repeat display-4 opacity-50"></i>
+                </div>
+                <div class="card-footer bg-transparent border-0 text-end">
+                    <a th:href="@{/issues(search='IN_PROGRESS')}" class="text-white text-decoration-none">View Details <i class="bi bi-arrow-right-circle"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

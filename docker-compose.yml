@@ -1,6 +1,6 @@
 services:
   db:
-    image: harbor.internal.svl.k8s.cedacrigroup.it/external-images-gtf/postgres:16
+    image: postgres:16
     container_name: postgres-db
     restart: unless-stopped
     environment:
