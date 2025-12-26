@@ -5,55 +5,98 @@
     <title>Libra Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .sidebar { min-height: 100vh; background-color: #f8f9fa; border-right: 1px solid #dee2e6; }
+        html, body { height: 100%; overflow: hidden; }
+
+        .sidebar {
+            width: 280px;
+            background-color: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            height: 100vh;
+            overflow-y: auto;
+            background-color: #ffffff;
+        }
+
         .nav-link { color: #333; }
-        .nav-link.active { background-color: #e9ecef; }
+        .nav-link.active { background-color: #0d6efd; color: white !important; }
+        .nav-link:hover:not(.active) { background-color: #e9ecef; }
     </style>
 </head>
 <body>
-<div class="d-flex">
-    <div class="d-flex flex-column p-3 sidebar" style="width: 280px;">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">
-            <span class="fs-4">Libra</span>
+<div class="d-flex h-100">
+    <div class="sidebar p-3">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none text-dark">
+            <span class="fs-4 fw-bold">Libra</span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="/" class="nav-link">
+                <a href="/" class="nav-link"
+                   th:classappend="${#httpServletRequest.requestURI == '/' ? 'active' : ''}">
                     Dashboard
                 </a>
             </li>
+
             <li>
-                <span class="nav-link disabled text-uppercase fw-bold mt-2">POS</span>
+                <span class="nav-link disabled text-uppercase fw-bold mt-2 small text-muted">POS</span>
             </li>
             <li>
-                <a href="#" class="nav-link">Browse POS</a>
+                <a href="/pos/browse" class="nav-link"
+                   th:classappend="${#httpServletRequest.requestURI == '/pos/browse' ? 'active' : ''}">
+                    Browse POS
+                </a>
             </li>
             <li sec:authorize="hasRole('ADMIN')">
-                <a href="#" class="nav-link">Add POS</a>
+                <a href="/pos/add" class="nav-link"
+                   th:classappend="${#httpServletRequest.requestURI == '/pos/add' ? 'active' : ''}">
+                    Add POS
+                </a>
             </li>
 
             <li>
-                <span class="nav-link disabled text-uppercase fw-bold mt-2">Issues</span>
+                <span class="nav-link disabled text-uppercase fw-bold mt-2 small text-muted">Issues</span>
             </li>
             <li>
-                <a href="/issues/add" class="nav-link">Add Issue</a>
+                <a href="/issues/add" class="nav-link"
+                   th:classappend="${#httpServletRequest.requestURI == '/issues/add' ? 'active' : ''}">
+                    Add Issue
+                </a>
             </li>
             <li>
-                <a href="/issues/browse" class="nav-link">Browse Issues</a>
+                <a href="/issues/browse" class="nav-link"
+                   th:classappend="${#httpServletRequest.requestURI == '/issues/browse' ? 'active' : ''}">
+                    Browse Issues
+                </a>
             </li>
 
             <li sec:authorize="hasRole('ADMIN')">
-                <span class="nav-link disabled text-uppercase fw-bold mt-2">Users</span>
+                <span class="nav-link disabled text-uppercase fw-bold mt-2 small text-muted">Users</span>
                 <ul class="list-unstyled ps-3">
-                    <li><a href="#" class="nav-link">Browse Users</a></li>
-                    <li><a href="#" class="nav-link">Add User</a></li>
+                    <li>
+                        <a href="/users/browse" class="nav-link"
+                           th:classappend="${#httpServletRequest.requestURI == '/users/browse' ? 'active' : ''}">
+                            Browse Users
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/users/add" class="nav-link"
+                           th:classappend="${#httpServletRequest.requestURI == '/users/add' ? 'active' : ''}">
+                            Add User
+                        </a>
+                    </li>
                 </ul>
             </li>
         </ul>
         <hr>
         <div class="dropdown">
-            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                 <strong sec:authentication="name">User</strong>
             </a>
             <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
@@ -62,10 +105,11 @@
         </div>
     </div>
 
-    <div class="flex-grow-1 p-4">
+    <div class="main-content p-4">
         <div th:replace="${content}"></div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
