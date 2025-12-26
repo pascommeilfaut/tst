@@ -1,10 +1,12 @@
 package com.iongroup.data.issue.status;
 
 import com.iongroup.util.EnumUtils;
+import lombok.Getter; // Import Getter
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 
+@Getter // <--- Add this
 @RequiredArgsConstructor
 public enum IssueStatus {
     NEW(1),
@@ -24,5 +26,4 @@ public enum IssueStatus {
                 .findFirst()
                 .orElse(null);
     }
-
 }

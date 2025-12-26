@@ -1,8 +1,10 @@
 package com.iongroup.data.user;
 
 import com.iongroup.util.EnumUtils;
+import lombok.Getter; // Import Getter
 import lombok.RequiredArgsConstructor;
 
+@Getter // <--- Add this
 @RequiredArgsConstructor
 public enum UserType {
     ADMIN(1),
@@ -20,7 +22,6 @@ public enum UserType {
                 return userType;
             }
         }
-
         return null;
     }
 }
