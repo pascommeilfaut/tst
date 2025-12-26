@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(content=~{::div})}">
+<body>
+<div class="container-fluid" style="max-width: 900px;">
+    <h1 class="mb-4">New POS</h1>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form th:action="@{/pos/save}" th:object="${posDto}" method="post">
+
+                <h5 class="mb-3 text-muted">General Information</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">POS Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" th:field="*{name}" required>
+                        <div class="text-danger small" th:errors="*{name}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">City <span class="text-danger">*</span></label>
+                        <select class="form-select" th:field="*{cityId}" required>
+                            <option value="">-- Select City --</option>
+                            <option th:each="city : ${cities}" th:value="${city.id}" th:text="${city.name}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Address <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" th:field="*{address}" required>
+                    <div class="text-danger small" th:errors="*{address}"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Telephone</label>
+                        <input type="text" class="form-control" th:field="*{telephone}">
+                        <div class="text-danger small" th:errors="*{telephone}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Cellphone</label>
+                        <input type="text" class="form-control" th:field="*{cellphone}">
+                        <div class="text-danger small" th:errors="*{cellphone}"></div>
+                    </div>
+                </div>
+
+                <h5 class="mt-4 mb-3 text-muted">Technical Details</h5>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Brand <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" th:field="*{brand}" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Model <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" th:field="*{model}" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Connection Type <span class="text-danger">*</span></label>
+                        <select class="form-select" th:field="*{connectionType}" required>
+                            <option value="">-- Select --</option>
+                            <option th:each="type : ${connectionTypes}" th:value="${type}" th:text="${type.displayName}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <h5 class="mt-4 mb-3 text-muted">Operating Hours</h5>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Morning Open</label>
+                        <input type="time" class="form-control" th:field="*{morningOpening}">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Morning Close</label>
+                        <input type="time" class="form-control" th:field="*{morningClosing}">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Afternoon Open</label>
+                        <input type="time" class="form-control" th:field="*{afternoonOpening}">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Afternoon Close</label>
+                        <input type="time" class="form-control" th:field="*{afternoonClosing}">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label d-block">Days Closed</label>
+                    <div class="form-check form-check-inline" th:each="day : ${daysOfWeek}">
+                        <input class="form-check-input" type="checkbox" th:value="${day}" th:field="*{daysClosed}" id="day-${day}">
+                        <label class="form-check-label" th:for="'day-' + ${day}" th:text="${day}"></label>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="/pos/browse" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save POS</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
