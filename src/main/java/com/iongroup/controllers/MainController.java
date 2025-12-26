@@ -1,10 +1,15 @@
 package com.iongroup.controllers;
 
+import com.iongroup.data.issue.status.IssueStatus;
 import com.iongroup.service.IssueService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,8 +24,17 @@ public class MainController {
 
     @GetMapping("/")
     public String dashboard(Model model) {
-        model.addAttribute("stats", issueService.countIssuesByStatus());
-        model.addAttribute("recentIssues", issueService.findByFilter(null, org.springframework.data.domain.Pageable.ofSize(10)).getContent());
+        Map<IssueStatus, Long> dbStats = issueService.countIssuesByStatus();
+
+        Map<IssueStatus, Long> completeStats = new LinkedHashMap<>();
+        for (IssueStatus status : IssueStatus.values()) {
+            completeStats.put(status, dbStats.getOrDefault(status, 0L));
+        }
+
+        model.addAttribute("stats", completeStats);
+
+        model.addAttribute("recentIssues", issueService.findByFilter(null, Pageable.ofSize(10)).getContent());
+
         return "dashboard";
     }
 }
