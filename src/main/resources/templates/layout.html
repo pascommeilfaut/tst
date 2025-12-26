@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)">
 <head>
     <meta charset="UTF-8">
     <title th:text="${pageTitle} ?: 'Libra'">Libra</title>
+
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.css}">
+
     <style>
         .sidebar { min-height: 100vh; background-color: #f8f9fa; }
         .nav-link { color: #333; margin-bottom: 5px; }
@@ -36,7 +38,7 @@
 
     <div class="flex-grow-1 d-flex flex-column">
         <nav class="navbar navbar-light bg-white border-bottom px-4 py-3">
-            <span class="navbar-brand mb-0 h4" th:text="${pageTitle}">Page Title</span>
+            <span class="navbar-brand mb-0 h4" th:text="${pageTitle} ?: 'Dashboard'">Page Title</span>
             <div class="d-flex align-items-center">
                 <span class="me-3 text-muted" th:text="${#authentication.name}">User</span>
                 <form th:action="@{/logout}" method="post" class="m-0">
@@ -46,11 +48,13 @@
                 </form>
             </div>
         </nav>
+
         <div class="container-fluid p-4 bg-light flex-grow-1">
             <div th:replace="${content}"></div>
         </div>
     </div>
 </div>
+
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>
