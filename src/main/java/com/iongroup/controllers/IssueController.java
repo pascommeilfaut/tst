@@ -1,16 +1,12 @@
 package com.iongroup.controllers;
 
-import com.iongroup.data.issue.IssuePriority;
 import com.iongroup.data.issue.status.IssueStatus;
-import com.iongroup.data.user.UserEntity;
-import com.iongroup.data.user.UserType;
 import com.iongroup.service.IssueService;
-import com.iongroup.service.IssueTypeService;
 import com.iongroup.service.PosService;
 import com.iongroup.service.dto.CreateIssueDto;
-import com.iongroup.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,11 +19,11 @@ public class IssueController {
 
     private final IssueService issueService;
     private final PosService posService;
-    private final IssueTypeService issueTypeService;
 
     @GetMapping("/browse")
     public String browse(@RequestParam(required = false) String status,
-                         @PageableDefault(size = 20) Pageable pageable,
+                         // Default sort: Created Date, Descending (Newest first)
+                         @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                          Model model) {
         if (status != null && !status.isEmpty()) {
             model.addAttribute("issues", issueService.findByStatus(IssueStatus.valueOfSafe(status), pageable));
@@ -40,23 +36,14 @@ public class IssueController {
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("issue", new CreateIssueDto());
-
-        // Populate dropdowns
+        // In a real app with many POS, you'd use an autocomplete/search API.
+        // For now, we load a list to populate a <select>
         model.addAttribute("posList", posService.findByFilter(null, Pageable.unpaged()).getContent());
-        model.addAttribute("issueTypes", issueTypeService.findAllParents(Pageable.unpaged()).getContent());
-        model.addAttribute("subTypes", issueTypeService.findAllSubTypes(Pageable.unpaged()).getContent());
-        model.addAttribute("priorities", IssuePriority.values());
-        model.addAttribute("statuses", IssueStatus.values());
-        model.addAttribute("userTypes", UserType.values());
-
         return "issues/add";
     }
 
     @PostMapping("/save")
     public String save(@ModelAttribute CreateIssueDto issueDto) {
-        // In a real app, you might want to set the current user ID here if not handled by the service/DTO mapping
-        UserEntity userDetails = AuthUtils.getCurrentUser();
-        issueDto.setCreatedBy(userDetails.getId());
         issueService.create(issueDto);
         return "redirect:/issues/browse";
     }

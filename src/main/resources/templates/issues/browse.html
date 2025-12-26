@@ -3,17 +3,28 @@
 <body>
 <div>
     <h2>Issues Manager</h2>
+
     <table class="table table-hover mt-3">
         <thead>
         <tr>
-            <th>Issue #</th>
-            <th>Pos Name</th>
-            <th>Created By</th>
-            <th>Date</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Assigned To</th>
-            <th>Memo</th>
+            <th th:fragment="sortHeader(field, label)" scope="col">
+                <a th:href="@{/issues/browse(status=${param.status}, page=${issues.number}, size=${issues.size}, sort=${field} + ',' + (${issues.sort.getOrderFor(field)?.direction?.name() == 'ASC' ? 'desc' : 'asc'}))}"
+                   class="text-decoration-none text-dark d-flex justify-content-between align-items-center">
+                    <span th:text="${label}">Label</span>
+                    <span th:if="${issues.sort.getOrderFor(field)?.direction?.name() == 'ASC'}">▴</span>
+                    <span th:if="${issues.sort.getOrderFor(field)?.direction?.name() == 'DESC'}">▾</span>
+                    <span th:if="${issues.sort.getOrderFor(field) == null}" class="text-muted" style="font-size: 0.8em; opacity: 0.5;">⇅</span>
+                </a>
+            </th>
+
+            <th th:replace="::sortHeader('id', 'Issue #')"></th>
+            <th th:replace="::sortHeader('pos.name', 'Pos Name')"></th>
+            <th th:replace="::sortHeader('createdBy.name', 'Created By')"></th>
+            <th th:replace="::sortHeader('createdAt', 'Date')"></th>
+            <th th:replace="::sortHeader('type.name', 'Type')"></th>
+            <th th:replace="::sortHeader('status', 'Status')"></th>
+            <th th:replace="::sortHeader('assignedTo', 'Assigned To')"></th>
+            <th th:replace="::sortHeader('memo', 'Memo')"></th>
         </tr>
         </thead>
         <tbody>
@@ -21,7 +32,7 @@
             <td th:text="${issue.id}"></td>
             <td th:text="${issue.pos.name}"></td>
             <td th:text="${issue.createdBy.name}"></td>
-            <td th:text="${issue.createdAt}"></td>
+            <td th:text="${#temporals.format(issue.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
             <td th:text="${issue.type.name}"></td>
             <td th:text="${issue.status.value.displayName}"></td>
             <td th:text="${issue.assignedTo != null ? issue.assignedTo.value.displayName : '-'}"></td>
@@ -33,10 +44,10 @@
     <nav aria-label="Page navigation" th:if="${issues.totalPages > 0}">
         <ul class="pagination">
             <li class="page-item" th:classappend="${issues.first} ? 'disabled'">
-                <a class="page-link" th:href="@{/issues/browse(page=${issues.number - 1})}">Previous</a>
+                <a class="page-link" th:href="@{/issues/browse(status=${param.status}, page=${issues.number - 1}, sort=${param.sort})}">Previous</a>
             </li>
             <li class="page-item" th:classappend="${issues.last} ? 'disabled'">
-                <a class="page-link" th:href="@{/issues/browse(page=${issues.number + 1})}">Next</a>
+                <a class="page-link" th:href="@{/issues/browse(status=${param.status}, page=${issues.number + 1}, sort=${param.sort})}">Next</a>
             </li>
         </ul>
     </nav>
