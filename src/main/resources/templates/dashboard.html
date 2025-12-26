@@ -1,22 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(content=~{::div})}">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" th:replace="~{layout :: html(content=~{::div})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
 <body>
 <div>
     <h1>Dashboard</h1>
 
-    <div class="row mb-4">
-        <div class="col-md-3" th:each="entry : ${stats}">
-            <div class="card text-white mb-3"
-                 th:classappend="${entry.key.name() == 'NEW' ? 'bg-danger' : (entry.key.name() == 'PENDING' ? 'bg-warning' : (entry.key.name() == 'ASSIGNED' ? 'bg-primary' : 'bg-success'))}">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${entry.key.displayName}">Status</h5>
-                    <p class="card-text display-4" th:text="${entry.value}">0</p>
-                </div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a th:href="@{/issues/browse(status=${entry.key})}" class="text-white text-decoration-none small stretched-link">View Details</a>
-                </div>
-            </div>
-        </div>
+    <div class="stat-card-holder">
+        <div th:replace="::card(caption='New issues', color='red', icon_name='file_text_o.svg', value=${newIssuesNumber})"></div>
+        <div th:replace="::card(caption='Pending issues', color='orange', icon_name='ellipse_circle_o.svg', value=${pendingIssuesNumber})"></div>
+        <div th:replace="::card(caption='Assigned issues', color='blue', icon_name='arrow_right.svg', value=${assignedIssuesNumber})"></div>
+        <div th:replace="::card(caption='In progress issues', color='green', icon_name='refresh.svg', value=${inProgressIssuesNumber})"></div>
     </div>
 
     <h3>Recent Issues</h3>
@@ -38,6 +34,24 @@
         </tr>
         </tbody>
     </table>
+
+    <div style="display: none">
+        <div th:fragment="card" th:classappend="${color}" class="stat-card">
+            <div class="stat-top">
+                <svg class="stat-icon">
+                    <use th:href="@{${'/icons/' + icon_name}}"/>
+                </svg>
+                <span th:text="${value}" class="stat-number">0</span>
+            </div>
+            <span th:text="${caption}" class="stat-caption"></span>
+            <div class="stat-link">
+                <span>View details</span>
+                <svg class="stat-link-icon">
+                    <use th:href="@{/icons/arrow_circle_right_o.svg}"/>
+                </svg>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>
