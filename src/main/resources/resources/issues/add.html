@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(content=~{::div})}">
+<body>
+<div>
+    <h1>Add Issue</h1>
+    <hr>
+    <form th:action="@{/issues/save}" th:object="${issue}" method="post">
+
+        <div class="mb-3">
+            <label for="posId" class="form-label">Select POS</label>
+            <select class="form-select" id="posId" th:field="*{posId}" required>
+                <option value="">-- Select POS --</option>
+                <option th:each="pos : ${posList}" th:value="${pos.id}" th:text="${pos.name + ' (' + pos.address + ')'}"></option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="memo" class="form-label">Memo</label>
+            <textarea class="form-control" id="memo" th:field="*{memo}"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Issue</button>
+    </form>
+</div>
+</body>
+</html>
