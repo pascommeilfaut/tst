@@ -33,7 +33,15 @@ public class MainController {
             completeStats.put(status, dbStats.getOrDefault(status, 0L));
         }
 
-        model.addAttribute("stats", completeStats);
+        model.addAttribute("newIssuesNumber",
+                dbStats.getOrDefault(IssueStatus.NEW, 0L));
+        model.addAttribute("pendingIssuesNumber",
+                dbStats.getOrDefault(IssueStatus.PENDING, 0L));
+        model.addAttribute("assignedIssuesNumber",
+                dbStats.getOrDefault(IssueStatus.ASSIGNED, 0L));
+        model.addAttribute("inProgressIssuesNumber",
+                dbStats.getOrDefault(IssueStatus.IN_PROGRESS, 0L));
+
 
         // Fetch recent issues for the grid
         model.addAttribute("recentIssues", issueService.findByFilter(null, org.springframework.data.domain.Pageable.ofSize(10)).getContent());
