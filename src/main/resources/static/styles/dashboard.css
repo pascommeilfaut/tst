@@ -1,0 +1,82 @@
+.stat-card-holder {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.stat-card {
+    flex-grow: 1;
+    border-radius: 5px;
+    border-width: 1px;
+    border-style: solid;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.stat-card.red {
+    background: #d9534f;
+    border-color: #d9534f;
+}
+.stat-card.orange {
+    background: #f0ad4e;
+    border-color: #f0ad4e;
+}
+.stat-card.blue {
+    background: #5bc0de;
+    border-color: #5bc0de;
+}
+.stat-card.green {
+    background: #5cb85c;
+    border-color: #5cb85c;
+}
+
+.stat-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 15px 0 15px;
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+}
+
+.stat-number {
+    font-size: 34px;
+    line-height: 1;
+}
+
+.stat-caption {
+    text-align: right;
+    padding: 0 15px;
+}
+
+.stat-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border-radius: 0 0 5px 5px;
+    background: #ffffff;
+    cursor: pointer;
+}
+.stat-card.red .stat-link {
+    color: #d9534f;
+}
+.stat-card.orange .stat-link {
+    color: #f0ad4e;
+}
+.stat-card.blue .stat-link {
+    color: #5bc0de;
+}
+.stat-card.green .stat-link {
+    color: #5cb85c;
+}
+
+.login-screen {
+    background-image: url("images/xp.jpg");
+    background-size: cover;
+    background-position: center;
+}
