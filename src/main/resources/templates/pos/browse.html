@@ -32,7 +32,8 @@
                     <td th:text="${pos.city.name}"></td>
                     <td th:text="${pos.model}"></td>
                     <td th:text="${pos.brand}"></td>
-                    <td th:text="${pos.connectionType?.displayName}"></td>
+
+                    <td th:text="${pos.connectionType?.value?.displayName}"></td>
 
                     <td th:with="count=${@issueService.countIssuesByPosId(pos.id)}">
                                 <span th:class="${count > 0 ? 'text-danger fw-bold' : 'text-success'}"
