@@ -1,7 +1,10 @@
 package com.iongroup.controllers;
 
+import com.iongroup.data.issue.IssuePriority;
 import com.iongroup.data.issue.status.IssueStatus;
+import com.iongroup.data.user.UserType;
 import com.iongroup.service.IssueService;
+import com.iongroup.service.IssueTypeService;
 import com.iongroup.service.PosService;
 import com.iongroup.service.dto.CreateIssueDto;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ public class IssueController {
 
     private final IssueService issueService;
     private final PosService posService;
+    private final IssueTypeService issueTypeService;
 
     @GetMapping("/browse")
     public String browse(@RequestParam(required = false) String status,
@@ -35,6 +39,12 @@ public class IssueController {
     public String addForm(Model model) {
         model.addAttribute("issue", new CreateIssueDto());
         model.addAttribute("posList", posService.findByFilter(null, Pageable.unpaged()).getContent());
+        model.addAttribute("issueTypes", issueTypeService.findAllParents(Pageable.unpaged()).getContent());
+        model.addAttribute("subTypes", issueTypeService.findAllSubTypes(Pageable.unpaged()).getContent());
+        model.addAttribute("priorities", IssuePriority.values());
+        model.addAttribute("statuses", IssueStatus.values());
+        model.addAttribute("userTypes", UserType.values());
+
         return "issues/add";
     }
 
