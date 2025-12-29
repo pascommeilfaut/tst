@@ -16,7 +16,24 @@
     </div>
 
     <h3>Recent Issues</h3>
-    <div th:replace="~{fragments/tables :: issuesList(issues=${issues}, url='/issues/browse')}"></div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>POS Name</th>
+            <th>Status</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="issue : ${recentIssues}">
+            <td th:text="${issue.id}">1</td>
+            <td th:text="${issue.pos.name}">Pos Name</td>
+            <td th:text="${issue.status.value.displayName}">New</td>
+            <td th:text="${issue.createdAt}">2023-01-01</td>
+        </tr>
+        </tbody>
+    </table>
 
     <div style="display: none">
         <div th:fragment="card" th:classappend="${color}" class="stat-card">
