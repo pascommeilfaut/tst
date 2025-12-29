@@ -115,15 +115,15 @@
                      th:classappend="${currentURI != null && currentURI.startsWith('/issues') ? 'show' : ''}">
                     <ul class="nav nav-pills flex-column submenu">
                         <li>
-                            <a href="/issues/add" class="nav-link"
-                               th:classappend="${currentURI != null && currentURI.startsWith('/issues/add') ? 'active' : ''}">
-                                Add Issue
-                            </a>
-                        </li>
-                        <li>
                             <a href="/issues/browse" class="nav-link"
                                th:classappend="${currentURI != null && currentURI.startsWith('/issues/browse') ? 'active' : ''}">
                                 Browse Issues
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/issues/add" class="nav-link"
+                               th:classappend="${currentURI != null && currentURI.startsWith('/issues/add') ? 'active' : ''}">
+                                Add Issue
                             </a>
                         </li>
                     </ul>

@@ -29,20 +29,28 @@
     </a>
 </th>
 
-<div th:fragment="pagination(page, url)" class="card-footer bg-white py-3" th:if="${page.totalPages > 0}">
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center m-0">
-            <li class="page-item" th:classappend="${page.first} ? 'disabled'">
-                <a class="page-link" th:href="@{${url}(page=${page.number - 1}, sort=${param.sort}, status=${param.status}, searchTerm=${param.searchTerm})}">Previous</a>
-            </li>
-            <li class="page-item disabled">
-                <span class="page-link border-0" th:text="${'Page ' + (page.number + 1) + ' of ' + page.totalPages}"></span>
-            </li>
-            <li class="page-item" th:classappend="${page.last} ? 'disabled'">
-                <a class="page-link" th:href="@{${url}(page=${page.number + 1}, sort=${param.sort}, status=${param.status}, searchTerm=${param.searchTerm})}">Next</a>
-            </li>
-        </ul>
-    </nav>
+<div th:fragment="pagination(page, url)" class="card-footer bg-light py-2" th:if="${page.totalPages > 0}">
+    <div class="d-flex justify-content-between align-items-center">
+        <small class="text-muted">
+            Showing page <span class="fw-bold" th:text="${page.number + 1}">1</span> of <span class="fw-bold" th:text="${page.totalPages}">10</span>
+        </small>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm m-0">
+                <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{${url}(page=${page.number - 1}, sort=${param.sort}, status=${param.status}, searchTerm=${param.searchTerm})}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo; Prev</span>
+                    </a>
+                </li>
+
+                <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{${url}(page=${page.number + 1}, sort=${param.sort}, status=${param.status}, searchTerm=${param.searchTerm})}" aria-label="Next">
+                        <span aria-hidden="true">Next &raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </div>
 
 <div th:fragment="issuesList(issues, url)">
