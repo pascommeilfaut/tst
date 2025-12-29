@@ -23,7 +23,7 @@ public class IssueController {
     @GetMapping("/browse")
     public String browse(@RequestParam(required = false) String status,
                          @RequestParam(required = false) String searchTerm,
-                         @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+                         @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                          Model model) {
         if (searchTerm != null && !searchTerm.isBlank()) {
             model.addAttribute("issues", issueService.findByFilter(searchTerm, pageable));

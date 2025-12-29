@@ -26,7 +26,7 @@ public class PosController {
 
     @GetMapping("/browse")
     public String browse(@RequestParam(required = false) String searchTerm,
-                         @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+                         @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
                          Model model) {
         model.addAttribute("posPage", posService.findByFilter(searchTerm, pageable));
         return "pos/browse";
