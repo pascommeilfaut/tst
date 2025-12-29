@@ -43,9 +43,9 @@
                 <input type="hidden" name="status" th:value="${param.status}" />
                 <input type="hidden" name="page" value="0" />
 
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text bg-transparent border-0 pe-1 text-muted">Rows:</span>
-                    <select name="size" onchange="this.form.submit()" class="form-select form-select-sm" style="max-width: 70px; cursor: pointer;">
+                <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small">Rows:</span>
+                    <select name="size" onchange="this.form.submit()" class="form-select form-select-sm" style="width: 70px; cursor: pointer;">
                         <option th:value="10" th:selected="${page.size == 10}">10</option>
                         <option th:value="20" th:selected="${page.size == 20}">20</option>
                         <option th:value="50" th:selected="${page.size == 50}">50</option>
