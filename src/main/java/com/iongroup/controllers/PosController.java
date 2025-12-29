@@ -12,10 +12,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.IntStream;
 
@@ -28,12 +25,14 @@ public class PosController {
     private final CityService cityService;
 
     @GetMapping("/browse")
-    public String browse(@PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+    public String browse(@RequestParam(required = false) String searchTerm,
+                         @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
                          Model model) {
-        model.addAttribute("posPage", posService.findByFilter(null, pageable));
+        model.addAttribute("posPage", posService.findByFilter(searchTerm, pageable));
         return "pos/browse";
     }
 
+    // ... addForm, save, populateFormAttributes methods remain unchanged ...
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("posDto", new SavePosDto());

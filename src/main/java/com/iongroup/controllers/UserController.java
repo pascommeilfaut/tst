@@ -24,17 +24,19 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/browse")
-    public String browse(@PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+    public String browse(@RequestParam(required = false) String searchTerm,
+                         @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
                          Model model) {
-        model.addAttribute("users", userService.findByFilter(null, pageable));
+        model.addAttribute("users", userService.findByFilter(searchTerm, pageable));
         return "users/browse";
     }
+
+    // ... addForm, editForm, create, update methods remain unchanged ...
 
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("userDto", new SaveUserDto());
         model.addAttribute("userTypes", UserType.values());
-        // Pass the action URL to the view
         model.addAttribute("formAction", "/users/create");
         return "users/add";
     }
@@ -46,7 +48,6 @@ public class UserController {
 
         model.addAttribute("userDto", dto);
         model.addAttribute("userTypes", UserType.values());
-        // Pass the action URL to the view
         model.addAttribute("formAction", "/users/update");
         return "users/add";
     }
