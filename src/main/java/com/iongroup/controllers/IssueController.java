@@ -22,9 +22,12 @@ public class IssueController {
 
     @GetMapping("/browse")
     public String browse(@RequestParam(required = false) String status,
+                         @RequestParam(required = false) String searchTerm,
                          @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                          Model model) {
-        if (status != null && !status.isEmpty()) {
+        if (searchTerm != null && !searchTerm.isBlank()) {
+            model.addAttribute("issues", issueService.findByFilter(searchTerm, pageable));
+        } else if (status != null && !status.isEmpty()) {
             model.addAttribute("issues", issueService.findByStatus(IssueStatus.valueOfSafe(status), pageable));
         } else {
             model.addAttribute("issues", issueService.findByFilter(null, pageable));
