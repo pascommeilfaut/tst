@@ -2,10 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(content=~{::div})}">
 <body>
 <div class="container-fluid" style="max-width: 800px;">
-    <h1 class="mb-4">Add User</h1>
+    <h1 class="mb-4" th:text="${userDto instanceof T(com.iongroup.service.dto.EditUserDto) ? 'Edit User' : 'Add User'}">Add User</h1>
+
     <div class="card shadow-sm">
         <div class="card-body">
-            <form th:action="@{/users/save}" th:object="${userDto}" method="post">
+            <form th:action="@{${formAction}}" th:object="${userDto}" method="post">
+
+                <input type="hidden" th:if="${userDto instanceof T(com.iongroup.service.dto.EditUserDto)}" th:field="*{id}" />
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
@@ -16,10 +19,18 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Password <span class="text-danger">*</span></label>
+                        <label class="form-label">
+                            Password
+                            <span class="text-danger" th:unless="${userDto instanceof T(com.iongroup.service.dto.EditUserDto)}">*</span>
+                        </label>
                         <input type="password" class="form-control" th:field="*{rawPassword}"
-                               th:classappend="${#fields.hasErrors('rawPassword')} ? 'is-invalid' : ''" required>
+                               th:classappend="${#fields.hasErrors('rawPassword')} ? 'is-invalid' : ''"
+                               th:required="${!(userDto instanceof T(com.iongroup.service.dto.EditUserDto))}">
                         <div class="invalid-feedback" th:errors="*{rawPassword}">Error</div>
+
+                        <small class="text-muted" th:if="${userDto instanceof T(com.iongroup.service.dto.EditUserDto)}">
+                            Leave blank to keep existing password.
+                        </small>
                     </div>
                 </div>
 
@@ -56,7 +67,10 @@
 
                 <div class="d-flex justify-content-end gap-2">
                     <a href="/users/browse" class="btn btn-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Save User</button>
+                    <button type="submit" class="btn btn-primary"
+                            th:text="${userDto instanceof T(com.iongroup.service.dto.EditUserDto) ? 'Update User' : 'Save User'}">
+                        Save User
+                    </button>
                 </div>
             </form>
         </div>
