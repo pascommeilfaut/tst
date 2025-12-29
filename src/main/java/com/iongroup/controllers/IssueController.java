@@ -1,7 +1,10 @@
 package com.iongroup.controllers;
 
+import com.iongroup.data.issue.IssuePriority;
 import com.iongroup.data.issue.status.IssueStatus;
+import com.iongroup.data.user.UserType;
 import com.iongroup.service.IssueService;
+import com.iongroup.service.IssueTypeService;
 import com.iongroup.service.PosService;
 import com.iongroup.service.dto.CreateIssueDto;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class IssueController {
 
     private final IssueService issueService;
+    private final IssueTypeService issueTypeService;
     private final PosService posService;
 
     @GetMapping("/browse")
@@ -38,7 +42,16 @@ public class IssueController {
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("issue", new CreateIssueDto());
+
         model.addAttribute("posList", posService.findByFilter(null, Pageable.unpaged()).getContent());
+        model.addAttribute("issueTypes", issueTypeService.findAllParents(Pageable.unpaged()).getContent());
+        model.addAttribute("subTypes", issueTypeService.findAllSubTypes(Pageable.unpaged()).getContent());
+        model.addAttribute("priorities", IssuePriority.values());
+        model.addAttribute("statuses", IssueStatus.values());
+        model.addAttribute("userTypes", UserType.values());
+
+        model.addAttribute("formAction", "/issues/save");
+
         return "issues/add";
     }
 
