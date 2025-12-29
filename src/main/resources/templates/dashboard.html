@@ -16,7 +16,7 @@
     </div>
 
     <h3>Recent Issues</h3>
-    <div th:replace="~{fragments/tables :: issuesList(issues=${issues}, url='/issues/browse')}"></div>
+    <div th:replace="~{fragments/tables :: issuesList(issues=${issues}, url=${currentUrl})}"></div>
 
     <div style="display: none">
         <div th:fragment="card" th:classappend="${color}" class="stat-card">
