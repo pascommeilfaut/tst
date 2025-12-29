@@ -9,10 +9,10 @@
     <h1>Dashboard</h1>
 
     <div class="stat-card-holder">
-        <div th:replace="::card(caption='New issues', color='red', icon_name='file_text_o.svg', value=${newIssuesNumber})"></div>
-        <div th:replace="::card(caption='Pending issues', color='orange', icon_name='ellipse_circle_o.svg', value=${pendingIssuesNumber})"></div>
-        <div th:replace="::card(caption='Assigned issues', color='blue', icon_name='arrow_right.svg', value=${assignedIssuesNumber})"></div>
-        <div th:replace="::card(caption='In progress issues', color='green', icon_name='refresh.svg', value=${inProgressIssuesNumber})"></div>
+        <div th:replace="::card(status='NEW', caption='New issues', color='red', icon_name='file_text_o.svg', value=${newIssuesNumber})"></div>
+        <div th:replace="::card(status='PENDING', caption='Pending issues', color='orange', icon_name='ellipse_circle_o.svg', value=${pendingIssuesNumber})"></div>
+        <div th:replace="::card(status='ASSIGNED', caption='Assigned issues', color='blue', icon_name='arrow_right.svg', value=${assignedIssuesNumber})"></div>
+        <div th:replace="::card(status='IN_PROGRESS', caption='In progress issues', color='green', icon_name='refresh.svg', value=${inProgressIssuesNumber})"></div>
     </div>
 
     <h3>Recent Issues</h3>
@@ -37,19 +37,21 @@
 
     <div style="display: none">
         <div th:fragment="card" th:classappend="${color}" class="stat-card">
-            <div class="stat-top">
-                <svg class="stat-icon">
-                    <use th:href="@{${'/icons/' + icon_name}}"/>
-                </svg>
-                <span th:text="${value}" class="stat-number">0</span>
-            </div>
-            <span th:text="${caption}" class="stat-caption"></span>
-            <div class="stat-link">
-                <span>View details</span>
-                <svg class="stat-link-icon">
-                    <use th:href="@{/icons/arrow_circle_right_o.svg}"/>
-                </svg>
-            </div>
+            <a class="page-link" th:href="@{/issues/browse(status=${status}, page=0, sort='desc')}">
+                <div class="stat-top">
+                    <svg class="stat-icon">
+                        <use th:href="@{${'/icons/' + icon_name}}"/>
+                    </svg>
+                    <span th:text="${value}" class="stat-number">0</span>
+                </div>
+                <span th:text="${caption}" class="stat-caption"></span>
+                <div class="stat-link">
+                    <span>View details</span>
+                    <svg class="stat-link-icon">
+                        <use th:href="@{/icons/arrow_circle_right_o.svg}"/>
+                    </svg>
+                </div>
+            </a>
         </div>
     </div>
 </div>
