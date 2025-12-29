@@ -9,6 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
@@ -25,6 +26,7 @@ public class MainController {
 
     @GetMapping("/")
     public String dashboard(
+            @RequestParam(required = false) String searchTerm,
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             Model model) {
 
@@ -35,7 +37,7 @@ public class MainController {
         model.addAttribute("assignedIssuesNumber", dbStats.getOrDefault(IssueStatus.ASSIGNED, 0L));
         model.addAttribute("inProgressIssuesNumber", dbStats.getOrDefault(IssueStatus.IN_PROGRESS, 0L));
 
-        model.addAttribute("issues", issueService.findByFilter(null, pageable));
+        model.addAttribute("issues", issueService.findByFilter(searchTerm, pageable));
         model.addAttribute("currentUrl", "/");
 
         return "dashboard";
