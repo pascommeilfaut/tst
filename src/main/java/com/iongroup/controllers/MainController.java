@@ -3,7 +3,8 @@ package com.iongroup.controllers;
 import com.iongroup.data.issue.status.IssueStatus;
 import com.iongroup.service.IssueService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +35,8 @@ public class MainController {
         model.addAttribute("inProgressIssuesNumber",
                 dbStats.getOrDefault(IssueStatus.IN_PROGRESS, 0L));
 
-        model.addAttribute("recentIssues", issueService.findByFilter(null, Pageable.ofSize(10)).getContent());
+        model.addAttribute("issues", issueService.findByFilter(null,
+                PageRequest.of(0, 20, Sort.Direction.DESC, "createdAt")));
 
         return "dashboard";
     }
