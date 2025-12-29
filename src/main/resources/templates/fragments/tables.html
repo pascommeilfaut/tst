@@ -73,19 +73,6 @@
     </div>
 </div>
 
-<script th:fragment="clickableRowScript">
-    document.addEventListener("DOMContentLoaded", function() {
-        var rows = document.querySelectorAll("tr[data-href]");
-        rows.forEach(function(row) {
-            row.addEventListener("dblclick", function() {
-                window.location.href = this.getAttribute("data-href");
-            });
-            // Optional: visual cue
-            row.style.cursor = "pointer";
-        });
-    });
-</script>
-
 <div th:fragment="issuesList(issues, url)">
     <div class="card shadow-sm">
         <div class="table-responsive">
@@ -103,9 +90,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="issue : ${issues.content}"
-                    th:data-href="@{/issues/edit/{id}(id=${issue.id})}"
-                    title="Double-click to view details">
+                <tr th:each="issue : ${issues.content}">
                     <td th:text="${issue.id}"></td>
                     <td th:text="${issue.pos.name}"></td>
                     <td th:text="${issue.createdBy.name}"></td>
@@ -131,7 +116,6 @@
             </table>
         </div>
         <div th:replace="~{fragments/tables :: pagination(${issues}, ${url})}"></div>
-        <script th:replace="~{fragments/tables :: clickableRowScript}"></script>
     </div>
 </div>
 

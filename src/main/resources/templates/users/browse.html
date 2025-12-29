@@ -22,9 +22,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="user : ${users.content}"
-                    th:data-href="@{/users/edit/{id}(id=${user.id})}"
-                    title="Double-click to edit">
+                <tr th:each="user : ${users.content}">
                     <td th:text="${user.name}"></td>
                     <td th:text="${user.email}"></td>
                     <td th:text="${user.login}"></td>
@@ -46,7 +44,6 @@
         </div>
 
         <div th:replace="~{fragments/tables :: pagination(${users}, '/users/browse')}"></div>
-        <script th:replace="~{fragments/tables :: clickableRowScript}"></script>
     </div>
 </div>
 </body>
