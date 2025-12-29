@@ -39,12 +39,29 @@ public class IssueController {
     public String addForm(Model model) {
         model.addAttribute("issue", new CreateIssueDto());
         model.addAttribute("posList", posService.findByFilter(null, Pageable.unpaged()).getContent());
+        model.addAttribute("formAction", "/issues/save");
+        return "issues/add";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editForm(@PathVariable Integer id, Model model) {
+        CreateIssueDto dto = issueService.findSaveIssueDtoById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Issue not found: " + id));
+        model.addAttribute("issue", dto);
+        model.addAttribute("posList", posService.findByFilter(null, Pageable.unpaged()).getContent());
+        model.addAttribute("formAction", "/issues/update/" + id);
         return "issues/add";
     }
 
     @PostMapping("/save")
     public String save(@ModelAttribute CreateIssueDto issueDto) {
         issueService.create(issueDto);
+        return "redirect:/issues/browse";
+    }
+
+    @PostMapping("/update/{id}")
+    public String update(@PathVariable Integer id, @ModelAttribute CreateIssueDto issueDto) {
+        issueService.update(issueDto, id);
         return "redirect:/issues/browse";
     }
 }
