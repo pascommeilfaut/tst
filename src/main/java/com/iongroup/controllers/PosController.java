@@ -12,9 +12,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
 import java.util.stream.IntStream;
 
 @Controller
@@ -52,10 +54,8 @@ public class PosController {
     }
 
     private void populateFormAttributes(Model model) {
-        // Fetch all cities for the dropdown
         model.addAttribute("cities", cityService.findAll(Pageable.unpaged()).getContent());
         model.addAttribute("connectionTypes", ConnectionType.values());
-        // Days of week 1-7 for the checkboxes
         model.addAttribute("daysOfWeek", IntStream.range(1, 8).boxed().toList());
     }
 }

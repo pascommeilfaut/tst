@@ -22,7 +22,6 @@ public class IssueController {
 
     @GetMapping("/browse")
     public String browse(@RequestParam(required = false) String status,
-                         // Default sort: Created Date, Descending (Newest first)
                          @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                          Model model) {
         if (status != null && !status.isEmpty()) {
@@ -36,8 +35,6 @@ public class IssueController {
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("issue", new CreateIssueDto());
-        // In a real app with many POS, you'd use an autocomplete/search API.
-        // For now, we load a list to populate a <select>
         model.addAttribute("posList", posService.findByFilter(null, Pageable.unpaged()).getContent());
         return "issues/add";
     }

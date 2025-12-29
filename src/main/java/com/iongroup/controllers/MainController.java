@@ -3,11 +3,11 @@ package com.iongroup.controllers;
 import com.iongroup.data.issue.status.IssueStatus;
 import com.iongroup.service.IssueService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Controller
@@ -23,15 +23,7 @@ public class MainController {
 
     @GetMapping("/")
     public String dashboard(Model model) {
-        // Fetch raw stats from service
         Map<IssueStatus, Long> dbStats = issueService.countIssuesByStatus();
-
-        // Ensure all statuses are present in the map, even if count is 0
-        // LinkedHashMap preserves insertion order (Order of Enum definition)
-        Map<IssueStatus, Long> completeStats = new LinkedHashMap<>();
-        for (IssueStatus status : IssueStatus.values()) {
-            completeStats.put(status, dbStats.getOrDefault(status, 0L));
-        }
 
         model.addAttribute("newIssuesNumber",
                 dbStats.getOrDefault(IssueStatus.NEW, 0L));
@@ -42,9 +34,7 @@ public class MainController {
         model.addAttribute("inProgressIssuesNumber",
                 dbStats.getOrDefault(IssueStatus.IN_PROGRESS, 0L));
 
-
-        // Fetch recent issues for the grid
-        model.addAttribute("recentIssues", issueService.findByFilter(null, org.springframework.data.domain.Pageable.ofSize(10)).getContent());
+        model.addAttribute("recentIssues", issueService.findByFilter(null, Pageable.ofSize(10)).getContent());
 
         return "dashboard";
     }
