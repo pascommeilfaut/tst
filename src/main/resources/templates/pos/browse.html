@@ -19,7 +19,7 @@
                     <th th:replace="~{fragments/tables :: sortHeader('city.name', 'City', ${posPage}, '/pos/browse')}"></th>
                     <th th:replace="~{fragments/tables :: sortHeader('model', 'Model', ${posPage}, '/pos/browse')}"></th>
                     <th th:replace="~{fragments/tables :: sortHeader('brand', 'Brand', ${posPage}, '/pos/browse')}"></th>
-                    <th>Connection</th>
+                    <th th:replace="~{fragments/tables :: sortHeader('connectionType.value', 'Connection', ${posPage}, '/pos/browse')}"></th>
                     <th>Status</th>
                 </tr>
                 </thead>
