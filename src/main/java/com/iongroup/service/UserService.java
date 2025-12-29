@@ -2,6 +2,7 @@ package com.iongroup.service;
 
 import com.iongroup.data.user.UserEntity;
 import com.iongroup.data.user.UserRepo;
+import com.iongroup.service.dto.EditUserDto;
 import com.iongroup.service.dto.SaveUserDto;
 import com.iongroup.service.mapper.UserMapper;
 import com.iongroup.util.ValidationUtils;
@@ -27,36 +28,31 @@ public class UserService {
     public UserEntity create(@NonNull SaveUserDto userParams) {
         ValidationUtils.validate(userParams);
 
-        String rawPassword = userParams.getRawPassword();
-        if (rawPassword == null || rawPassword.isBlank()) {
+        if (userParams.getRawPassword() == null || userParams.getRawPassword().isBlank()) {
             throw new IllegalArgumentException("Password must not be null or blank");
         }
 
         UserEntity userEntity = userMapper.mapToEntityFromSaveDto(userParams);
-        userEntity.setPassword(passwordEncoder.encode(rawPassword));
+        userEntity.setPassword(passwordEncoder.encode(userParams.getRawPassword()));
 
         return repo.save(userEntity);
     }
 
     @Transactional
     @NonNull
-    public UserEntity update(@NonNull SaveUserDto userParams, @NonNull Integer id) {
+    public UserEntity update(@NonNull EditUserDto userParams) {
         ValidationUtils.validate(userParams);
 
-        UserEntity user = findById(id).orElse(null);
-        if (user == null) {
-            throw new IllegalArgumentException("User with id %s does not exist".formatted(id));
+        UserEntity user = repo.findById(userParams.getId())
+                .orElseThrow(() -> new IllegalArgumentException("User with id " + userParams.getId() + " does not exist"));
+
+        userMapper.updateEntityFromEditDto(userParams, user);
+
+        if (userParams.getRawPassword() != null && !userParams.getRawPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(userParams.getRawPassword()));
         }
 
-        UserEntity updatedUser = userMapper.mapToEntityFromSaveDto(userParams);
-        updatedUser.setId(user.getId());
-        String rawNewPassword = userParams.getRawPassword();
-        String newPassword = (rawNewPassword == null || rawNewPassword.isBlank())
-                ? user.getPassword()
-                : passwordEncoder.encode(rawNewPassword);
-        updatedUser.setPassword(newPassword);
-
-        return repo.save(updatedUser);
+        return repo.save(user);
     }
 
     @NonNull
@@ -67,11 +63,13 @@ public class UserService {
     @Transactional(readOnly = true)
     @NonNull
     public Optional<SaveUserDto> findSaveUserDtoById(@NonNull Integer id) {
-        UserEntity entity = findById(id).orElse(null);
-        if (entity == null) {
-            return Optional.empty();
-        }
-        return Optional.of(userMapper.mapToSaveDto(entity));
+        return repo.findById(id).map(userMapper::mapToSaveDto);
+    }
+
+    @Transactional(readOnly = true)
+    @NonNull
+    public Optional<EditUserDto> findEditUserDtoById(@NonNull Integer id) {
+        return repo.findById(id).map(userMapper::mapToEditDto);
     }
 
     @NonNull
@@ -92,5 +90,4 @@ public class UserService {
     public Page<UserEntity> findAll(Pageable pageable) {
         return repo.findAll(pageable);
     }
-
 }
