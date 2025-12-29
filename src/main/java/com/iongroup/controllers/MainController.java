@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Controller
@@ -26,11 +25,6 @@ public class MainController {
     public String dashboard(Model model) {
         Map<IssueStatus, Long> dbStats = issueService.countIssuesByStatus();
 
-        Map<IssueStatus, Long> completeStats = new LinkedHashMap<>();
-        for (IssueStatus status : IssueStatus.values()) {
-            completeStats.put(status, dbStats.getOrDefault(status, 0L));
-        }
-
         model.addAttribute("newIssuesNumber",
                 dbStats.getOrDefault(IssueStatus.NEW, 0L));
         model.addAttribute("pendingIssuesNumber",
@@ -39,7 +33,6 @@ public class MainController {
                 dbStats.getOrDefault(IssueStatus.ASSIGNED, 0L));
         model.addAttribute("inProgressIssuesNumber",
                 dbStats.getOrDefault(IssueStatus.IN_PROGRESS, 0L));
-
 
         model.addAttribute("recentIssues", issueService.findByFilter(null, Pageable.ofSize(10)).getContent());
 

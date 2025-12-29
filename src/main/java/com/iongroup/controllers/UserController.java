@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
-@Secured("ROLE_ADMIN") // Equivalent to @RolesAllowed("ADMIN")
+@Secured("ROLE_ADMIN")
 public class UserController {
 
     private final UserService userService;
@@ -48,7 +48,6 @@ public class UserController {
         try {
             userService.create(userDto);
         } catch (IllegalArgumentException e) {
-            // Handle specific business errors (like duplicate login)
             bindingResult.rejectValue("login", "error.login", e.getMessage());
             model.addAttribute("userTypes", UserType.values());
             return "users/add";
