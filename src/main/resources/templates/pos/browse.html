@@ -25,9 +25,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="pos : ${posPage.content}"
-                    th:data-href="@{/pos/edit/{id}(id=${pos.id})}"
-                    title="Double-click to view details">
+                <tr th:each="pos : ${posPage.content}">
                     <td th:text="${pos.name}"></td>
                     <td th:text="${pos.telephone}"></td>
                     <td th:text="${pos.cellphone}"></td>
@@ -52,7 +50,6 @@
         </div>
 
         <div th:replace="~{fragments/tables :: pagination(${posPage}, '/pos/browse')}"></div>
-        <script th:replace="~{fragments/tables :: clickableRowScript}"></script>
     </div>
 </div>
 </body>
