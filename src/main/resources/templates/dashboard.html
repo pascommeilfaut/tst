@@ -15,7 +15,8 @@
         <div th:replace="~{::card(status='IN_PROGRESS', caption='In progress issues', color='green', icon_name='refresh.svg', value=${inProgressIssuesNumber})}"></div>
     </div>
 
-    <h3>Recent Issues</h3>
+    <div th:replace="~{fragments/tables :: searchForm(${currentUrl})}"></div>
+
     <div th:replace="~{fragments/tables :: issuesList(issues=${issues}, url=${currentUrl})}"></div>
 
     <div style="display: none">
