@@ -2,19 +2,30 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
+<div th:fragment="searchForm(url)" class="mb-3">
+    <form th:action="@{${url}}" method="get" class="d-flex" style="max-width: 400px;">
+        <input type="text" name="searchTerm" class="form-control me-2"
+               placeholder="Search..." th:value="${param.searchTerm}" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+        <a th:if="${not #strings.isEmpty(param.searchTerm)}" th:href="@{${url}}" class="btn btn-outline-secondary ms-2">Clear</a>
+    </form>
+</div>
+
 <th th:fragment="sortHeader(field, label, page, url)" scope="col" style="cursor: pointer; white-space: nowrap;"
     th:with="currentSort=${page.sort.getOrderFor(field)},
-             isAsc=${currentSort?.direction?.name() == 'ASC'},
-             nextDir=${isAsc ? 'desc' : 'asc'}">
+                 isAsc=${currentSort?.direction?.name() == 'ASC'},
+                 nextDir=${isAsc ? 'desc' : 'asc'}">
 
-    <a th:href="@{${url}(page=${page.number}, size=${page.size}, sort=${field} + ',' + ${nextDir}, status=${param.status})}"
+    <a th:href="@{${url}(page=${page.number}, size=${page.size}, sort=${field} + ',' + ${nextDir}, status=${param.status}, searchTerm=${param.searchTerm})}"
        class="text-decoration-none text-dark d-flex justify-content-between align-items-center user-select-none">
+
         <span th:text="${label}" class="fw-bold me-2">Label</span>
+
         <span class="text-muted" style="font-size: 0.8rem;">
-            <span th:if="${isAsc}">&#9650;</span>
-            <span th:if="${currentSort != null and !isAsc}">&#9660;</span>
-            <span th:if="${currentSort == null}" class="opacity-25">&#8645;</span>
-        </span>
+                <span th:if="${isAsc}">&#9650;</span>
+                <span th:if="${currentSort != null and !isAsc}">&#9660;</span>
+                <span th:if="${currentSort == null}" class="opacity-25">&#8645;</span>
+            </span>
     </a>
 </th>
 
@@ -22,13 +33,13 @@
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center m-0">
             <li class="page-item" th:classappend="${page.first} ? 'disabled'">
-                <a class="page-link" th:href="@{${url}(page=${page.number - 1}, sort=${param.sort}, status=${param.status})}">Previous</a>
+                <a class="page-link" th:href="@{${url}(page=${page.number - 1}, sort=${param.sort}, status=${param.status}, searchTerm=${param.searchTerm})}">Previous</a>
             </li>
             <li class="page-item disabled">
                 <span class="page-link border-0" th:text="${'Page ' + (page.number + 1) + ' of ' + page.totalPages}"></span>
             </li>
             <li class="page-item" th:classappend="${page.last} ? 'disabled'">
-                <a class="page-link" th:href="@{${url}(page=${page.number + 1}, sort=${param.sort}, status=${param.status})}">Next</a>
+                <a class="page-link" th:href="@{${url}(page=${page.number + 1}, sort=${param.sort}, status=${param.status}, searchTerm=${param.searchTerm})}">Next</a>
             </li>
         </ul>
     </nav>
@@ -58,12 +69,12 @@
                     <td th:text="${issue.createdAt != null ? #temporals.format(issue.createdAt, 'yyyy-MM-dd HH:mm') : '-'}"></td>
                     <td th:text="${issue.type.name}"></td>
                     <td>
-                        <span class="badge"
-                              th:classappend="${issue.status.getValue().name() == 'NEW' ? 'bg-danger' :
-                                                (issue.status.getValue().name() == 'PENDING' ? 'bg-warning text-dark' :
-                                                (issue.status.getValue().name() == 'ASSIGNED' ? 'bg-primary' : 'bg-success'))}"
-                              th:text="${issue.status.value.displayName}">
-                        </span>
+                            <span class="badge"
+                                  th:classappend="${issue.status.getValue().name() == 'NEW' ? 'bg-danger' :
+                                                    (issue.status.getValue().name() == 'PENDING' ? 'bg-warning text-dark' :
+                                                    (issue.status.getValue().name() == 'ASSIGNED' ? 'bg-primary' : 'bg-success'))}"
+                                  th:text="${issue.status.value.displayName}">
+                            </span>
                     </td>
                     <td th:text="${issue.assignedTo != null ? issue.assignedTo.value.displayName : '-'}"></td>
                     <td th:text="${issue.memo}" class="text-truncate" style="max-width: 150px;"></td>
