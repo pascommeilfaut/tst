@@ -29,22 +29,42 @@
     </a>
 </th>
 
-<div th:fragment="pagination(page, url)" class="card-footer bg-light py-2" th:if="${page.totalPages > 0}">
+<div th:fragment="pagination(page, url)" class="card-footer bg-light py-2" th:if="${page.totalElements > 0}">
     <div class="d-flex justify-content-between align-items-center">
-        <small class="text-muted">
-            Showing page <span class="fw-bold" th:text="${page.number + 1}">1</span> of <span class="fw-bold" th:text="${page.totalPages}">10</span>
-        </small>
+
+        <div class="d-flex align-items-center gap-3">
+            <small class="text-muted text-nowrap">
+                Page <span class="fw-bold" th:text="${page.number + 1}">1</span> of <span class="fw-bold" th:text="${page.totalPages}">10</span>
+            </small>
+
+            <form th:action="@{${url}}" method="get" class="d-flex align-items-center">
+                <input type="hidden" name="sort" th:value="${param.sort}" />
+                <input type="hidden" name="searchTerm" th:value="${param.searchTerm}" />
+                <input type="hidden" name="status" th:value="${param.status}" />
+                <input type="hidden" name="page" value="0" />
+
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-transparent border-0 pe-1 text-muted">Rows:</span>
+                    <select name="size" onchange="this.form.submit()" class="form-select form-select-sm" style="max-width: 70px; cursor: pointer;">
+                        <option th:value="10" th:selected="${page.size == 10}">10</option>
+                        <option th:value="20" th:selected="${page.size == 20}">20</option>
+                        <option th:value="50" th:selected="${page.size == 50}">50</option>
+                        <option th:value="100" th:selected="${page.size == 100}">100</option>
+                    </select>
+                </div>
+            </form>
+        </div>
 
         <nav aria-label="Page navigation">
             <ul class="pagination pagination-sm m-0">
                 <li class="page-item" th:classappend="${page.first} ? 'disabled'">
-                    <a class="page-link" th:href="@{${url}(page=${page.number - 1}, sort=${param.sort}, status=${param.status}, searchTerm=${param.searchTerm})}" aria-label="Previous">
+                    <a class="page-link" th:href="@{${url}(page=${page.number - 1}, size=${page.size}, sort=${param.sort}, status=${param.status}, searchTerm=${param.searchTerm})}" aria-label="Previous">
                         <span aria-hidden="true">&laquo; Prev</span>
                     </a>
                 </li>
 
                 <li class="page-item" th:classappend="${page.last} ? 'disabled'">
-                    <a class="page-link" th:href="@{${url}(page=${page.number + 1}, sort=${param.sort}, status=${param.status}, searchTerm=${param.searchTerm})}" aria-label="Next">
+                    <a class="page-link" th:href="@{${url}(page=${page.number + 1}, size=${page.size}, sort=${param.sort}, status=${param.status}, searchTerm=${param.searchTerm})}" aria-label="Next">
                         <span aria-hidden="true">Next &raquo;</span>
                     </a>
                 </li>
