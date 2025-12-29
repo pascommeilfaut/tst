@@ -3,12 +3,14 @@ package com.iongroup.service.mapper;
 import com.iongroup.data.user.UserEntity;
 import com.iongroup.data.user.UserType;
 import com.iongroup.data.user.type.UserTypeEntity;
+import com.iongroup.service.dto.EditUserDto;
 import com.iongroup.service.dto.UserDto;
 import com.iongroup.service.dto.SaveUserDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
@@ -32,6 +34,14 @@ public abstract class UserMapper {
     @Mapping(source = "password", target = "rawPassword", ignore = true)
     @Mapping(source = "type.value", target = "type")
     public abstract SaveUserDto mapToSaveDto(UserEntity entity);
+
+    @Mapping(source = "type.value", target = "type")
+    public abstract EditUserDto mapToEditDto(UserEntity entity);
+
+    @Mapping(source = "type", target = "type", qualifiedByName = "mapToUserTypeEntity")
+    public abstract UserEntity mapToEntityFromEditDto(EditUserDto editUserDto);
+
+    public abstract void updateEntityFromEditDto(EditUserDto editUserDto, @MappingTarget UserEntity entity);
 
     @Named("mapToUserTypeEntity")
     protected UserTypeEntity mapToUserTypeEntity(UserType userType) {
