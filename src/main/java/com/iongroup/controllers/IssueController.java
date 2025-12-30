@@ -48,7 +48,7 @@ public class IssueController {
     @GetMapping("/add")
     public String addForm(@RequestParam(required = false) Integer selectedPosId,
                           @RequestParam(required = false) String searchTerm,
-                          @PageableDefault(size = 10) Pageable pageable,
+                          @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                           Model model) {
 
         if (selectedPosId != null) {

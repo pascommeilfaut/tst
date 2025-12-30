@@ -23,11 +23,11 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                         <tr>
-                            <th>POS Id</th>
-                            <th>POS Name</th>
-                            <th>Telephone</th>
-                            <th>Cellphone</th>
-                            <th>Address</th>
+                            <th th:replace="~{fragments/tables :: sortHeader('id', 'POS #', ${posList}, '/issues/add')}"></th>
+                            <th th:replace="~{fragments/tables :: sortHeader('name', 'POS name', ${posList}, '/issues/add')}"></th>
+                            <th th:replace="~{fragments/tables :: sortHeader('telephone', 'Telephone', ${posList}, '/issues/add')}"></th>
+                            <th th:replace="~{fragments/tables :: sortHeader('cellphone', 'Cellphone', ${posList}, '/issues/add')}"></th>
+                            <th th:replace="~{fragments/tables :: sortHeader('address', 'Address', ${posList}, '/issues/add')}"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -49,7 +49,7 @@
                     </table>
                 </div>
             </div>
-            <div th:if="${posList.totalPages > 1}" class="card-footer bg-white border-top-0">
+            <div class="card-footer bg-white border-top-0">
                 <div th:replace="~{fragments/tables :: pagination(${posList}, '/issues/add')}"></div>
             </div>
         </div>
