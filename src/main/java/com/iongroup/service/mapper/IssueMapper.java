@@ -7,6 +7,7 @@ import com.iongroup.data.user.UserEntity;
 import com.iongroup.data.user.UserType;
 import com.iongroup.data.user.type.UserTypeEntity;
 import com.iongroup.service.dto.CreateIssueDto;
+import com.iongroup.service.dto.UpdateIssueDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.mapstruct.Mapper;
@@ -28,14 +29,22 @@ public abstract class IssueMapper {
     @Mapping(source = "createdBy", target = "createdBy", qualifiedByName = "mapToUserEntity")
     public abstract IssueEntity mapToEntity(CreateIssueDto dto);
 
+    @Mapping(source = "posId", target = "pos.id")
+    @Mapping(source = "issueTypeId", target = "type.id")
+    @Mapping(source = "subTypeId", target = "subType.id")
+    @Mapping(source = "problemDescription", target = "description")
+    @Mapping(source = "status", target = "status", qualifiedByName = "mapToIssueStatusEntity")
+    @Mapping(source = "assignedTo", target = "assignedTo", qualifiedByName = "mapToUserTypeEntity")
+    @Mapping(target = "createdBy", ignore = true)
+    public abstract IssueEntity mapToEntity(UpdateIssueDto dto);
+
     @Mapping(source = "pos.id", target = "posId")
     @Mapping(source = "type.id", target = "issueTypeId")
     @Mapping(source = "subType.id", target = "subTypeId")
     @Mapping(source = "description", target = "problemDescription")
     @Mapping(source = "status.value.id", target = "status")
     @Mapping(source = "assignedTo.value.id", target = "assignedTo")
-    @Mapping(source = "createdBy.id", target = "createdBy")
-    public abstract CreateIssueDto mapToDto(IssueEntity entity);
+    public abstract UpdateIssueDto mapToUpdateDto(IssueEntity entity);
 
     @Named("mapToUserEntity")
     protected UserEntity mapToUserEntity(Integer userId) {
