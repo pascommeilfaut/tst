@@ -39,6 +39,17 @@ public class PosController {
         return "pos/add";
     }
 
+    @GetMapping("/edit/{id}")
+    public String editForm(@PathVariable Integer id, Model model) {
+        SavePosDto dto = posService.findSavePosDtoById(id)
+                .orElseThrow(() -> new IllegalArgumentException("POS not found: " + id));
+
+        model.addAttribute("posDto", dto);
+        populateFormAttributes(model);
+        model.addAttribute("formAction", "/pos/update/%s".formatted(id));
+        return "pos/add";
+    }
+
     @PostMapping("/save")
     public String save(@Valid @ModelAttribute("posDto") SavePosDto posDto,
                        BindingResult bindingResult,
@@ -48,6 +59,19 @@ public class PosController {
             return "pos/add";
         }
         posService.create(posDto);
+        return "redirect:/pos/browse";
+    }
+
+    @PostMapping("/update/{id}")
+    public String update(@PathVariable Integer id,
+                         @Valid @ModelAttribute("posDto") SavePosDto posDto,
+                         BindingResult bindingResult,
+                         Model model) {
+        if (bindingResult.hasErrors()) {
+            populateFormAttributes(model);
+            return "pos/edit/%s".formatted(id);
+        }
+        posService.update(posDto, id);
         return "redirect:/pos/browse";
     }
 
