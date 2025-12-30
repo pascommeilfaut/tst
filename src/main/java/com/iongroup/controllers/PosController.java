@@ -48,6 +48,7 @@ public class PosController {
             SavePosDto dto = posService.findSavePosDtoById(id)
                     .orElseThrow(() -> new IllegalArgumentException("POS not found: " + id));
 
+            model.addAttribute("posId", id);
             model.addAttribute("posDto", dto);
             populateFormAttributes(model);
             model.addAttribute("formAction", "/pos/update/%s".formatted(id));
