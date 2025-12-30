@@ -46,10 +46,8 @@ public class UserService {
         UserEntity user = repo.findById(userParams.getId())
                 .orElseThrow(() -> new IllegalArgumentException("User with id " + userParams.getId() + " does not exist"));
 
-        // Use Mapper to update fields (except password)
         userMapper.updateEntityFromEditDto(userParams, user);
 
-        // Handle Password Update Separately
         if (userParams.getRawPassword() != null && !userParams.getRawPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(userParams.getRawPassword()));
         }
