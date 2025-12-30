@@ -1,92 +1,164 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(content=~{::div})}">
 <body>
-<div class="container-fluid" style="max-width: 900px;">
-    <h1 class="mb-4">Save issue</h1>
+<div class="container-fluid">
+    <h1 class="mb-4" th:text="${showSearch} ? 'New issue' : (${issue.id} == null ? 'New issue' : 'Issue details')">New issue</h1>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <form th:action="@{${formAction}}" th:object="${issue}" method="post">
+    <div th:if="${showSearch}">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+                <h5 class="card-title m-0">Search the POS</h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/issues/add}" method="get" class="d-flex" style="max-width: 500px;">
+                    <input type="text" name="searchTerm" class="form-control me-2"
+                           placeholder="Search by ID, Name, Phone..." th:value="${searchTerm}">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                    <a th:if="${not #strings.isEmpty(searchTerm)}" th:href="@{/issues/add}" class="btn btn-outline-secondary ms-2">Clear</a>
+                </form>
+            </div>
+        </div>
 
-                <div class="mb-3">
-                    <label for="posId" class="form-label">Select POS <span class="text-danger">*</span></label>
-                    <select class="form-select" id="posId" th:field="*{posId}" required>
-                        <option value="">-- Select POS --</option>
-                        <option th:each="pos : ${posList}" th:value="${pos.id}" th:text="${pos.name + ' (' + pos.address + ')'}"></option>
-                    </select>
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="card-title m-0">Search results</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 table-bordered">
+                        <thead class="table-primary">
+                        <tr>
+                            <th>POS Id</th>
+                            <th>POS Name</th>
+                            <th>Telephone</th>
+                            <th>Cellphone</th>
+                            <th>Address</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="pos : ${posList.content}"
+                            th:data-url="@{/issues/add(selectedPosId=${pos.id})}"
+                            ondblclick="window.location.href=this.getAttribute('data-url')"
+                            style="cursor: pointer;"
+                            title="Double click to select">
+                            <td th:text="${pos.id}"></td>
+                            <td th:text="${pos.name}"></td>
+                            <td th:text="${pos.telephone}"></td>
+                            <td th:text="${pos.cellphone}"></td>
+                            <td th:text="${pos.address}"></td>
+                        </tr>
+                        <tr th:if="${posList.empty}">
+                            <td colspan="5" class="text-center py-3 text-muted">No POS found.</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
+            <div th:if="${posList.totalPages > 1}" class="card-footer">
+                <div th:replace="~{fragments/tables :: pagination(${posList}, '/issues/add')}"></div>
+            </div>
+        </div>
+    </div>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="issueTypeId" class="form-label">Issue Type <span class="text-danger">*</span></label>
-                        <select class="form-select" id="issueTypeId" th:field="*{issueTypeId}" required>
-                            <option value="">-- Select Type --</option>
-                            <option th:each="type : ${issueTypes}" th:value="${type.id}" th:text="${type.name}"></option>
-                        </select>
+    <div th:unless="${showSearch}">
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+                <h5 class="card-title m-0" th:text="${issue.id} == null ? 'Add issue for' : 'Issue object'">Add issue for</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-bordered mb-0">
+                    <thead class="table-primary">
+                    <tr>
+                        <th>POS Id</th>
+                        <th>POS Name</th>
+                        <th>Telephone</th>
+                        <th>Cellphone</th>
+                        <th>Address</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${selectedPos != null}">
+                        <td th:text="${selectedPos.id}"></td>
+                        <td th:text="${selectedPos.name}"></td>
+                        <td th:text="${selectedPos.telephone}"></td>
+                        <td th:text="${selectedPos.cellphone}"></td>
+                        <td th:text="${selectedPos.address}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="card-title m-0" th:text="${issue.id} == null ? 'Add Issue' : 'Issue details'">Add Issue</h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{${formAction}}" th:object="${issue}" method="post">
+                    <input type="hidden" th:field="*{posId}">
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-2">
+                            <label for="issueTypeId" class="form-label fw-bold">Issue type</label>
+                            <select class="form-select" id="issueTypeId" th:field="*{issueTypeId}" required>
+                                <option th:each="type : ${issueTypes}" th:value="${type.id}" th:text="${type.name}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="subTypeId" class="form-label fw-bold">Subclass</label>
+                            <select class="form-select" id="subTypeId" th:field="*{subTypeId}" required>
+                                <option value=""></option>
+                                <option th:each="sub : ${subTypes}" th:value="${sub.id}" th:text="${sub.name}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="problem" class="form-label fw-bold">Problem</label>
+                            <input type="text" class="form-control" id="problem" th:field="*{problem}" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="priority" class="form-label fw-bold">Priority</label>
+                            <select class="form-select" id="priority" th:field="*{priority}" required>
+                                <option th:each="p : ${priorities}" th:value="${p}" th:text="${p.displayName}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="status" class="form-label fw-bold">Status</label>
+                            <select class="form-select" id="status" th:field="*{status}" required>
+                                <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.displayName}"></option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="col-md-6 mb-3">
-                        <label for="subTypeId" class="form-label">Subclass <span class="text-danger">*</span></label>
-                        <select class="form-select" id="subTypeId" th:field="*{subTypeId}" required>
-                            <option value="">-- Select Subclass --</option>
-                            <option th:each="sub : ${subTypes}" th:value="${sub.id}" th:text="${sub.name}"></option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="problem" class="form-label">Problem <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="problem" th:field="*{problem}" required minlength="5" maxlength="255">
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="priority" class="form-label">Priority <span class="text-danger">*</span></label>
-                        <select class="form-select" id="priority" th:field="*{priority}" required>
-                            <option value="">-- Select Priority --</option>
-                            <option th:each="p : ${priorities}" th:value="${p}" th:text="${p.displayName}"></option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
-                        <select class="form-select" id="status" th:field="*{status}" required>
-                            <option value="">-- Select Status --</option>
-                            <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.displayName}"></option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="problemDescription" class="form-label">Problem description <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="problemDescription" th:field="*{problemDescription}" rows="4" required minlength="5" maxlength="10240"></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label for="solution" class="form-label">Solution</label>
-                    <textarea class="form-control" id="solution" th:field="*{solution}" rows="4" minlength="5" maxlength="10240"></textarea>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="assignedTo" class="form-label">Assigned To <span class="text-danger">*</span></label>
-                        <select class="form-select" id="assignedTo" th:field="*{assignedTo}" required>
-                            <option value="">-- Select Group --</option>
-                            <option th:each="u : ${userTypes}" th:value="${u.id}" th:text="${u.displayName}"></option>
-                        </select>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="problemDescription" class="form-label fw-bold">Problem description</label>
+                            <textarea class="form-control" id="problemDescription" th:field="*{problemDescription}" rows="5" required></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="solution" class="form-label fw-bold">Solution</label>
+                            <textarea class="form-control" id="solution" th:field="*{solution}" rows="5"></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="assignedTo" class="form-label fw-bold">Assigned To</label>
+                                <select class="form-select" id="assignedTo" th:field="*{assignedTo}" required>
+                                    <option th:each="u : ${userTypes}" th:value="${u.id}" th:text="${u.displayName}"></option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="memo" class="form-label fw-bold">Memo</label>
+                                <input type="text" class="form-control" id="memo" th:field="*{memo}">
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="col-md-6 mb-3">
-                        <label for="memo" class="form-label">Memo</label>
-                        <input type="text" class="form-control" id="memo" th:field="*{memo}" maxlength="255">
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary" th:text="${issue.id} == null ? 'Open issue' : 'Save changes'">Open issue</button>
+                        <a href="/issues/browse" class="btn btn-secondary">Cancel</a>
                     </div>
-                </div>
-
-                <div class="d-flex justify-content-end gap-2">
-                    <a href="/issues/browse" class="btn btn-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Save issue</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>
