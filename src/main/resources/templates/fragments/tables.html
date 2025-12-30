@@ -87,11 +87,13 @@
                     <th th:replace="~{fragments/tables :: sortHeader('status', 'Status', ${issues}, ${url})}"></th>
                     <th th:replace="~{fragments/tables :: sortHeader('assignedTo', 'Assigned To', ${issues}, ${url})}"></th>
                     <th th:replace="~{fragments/tables :: sortHeader('memo', 'Memo', ${issues}, ${url})}"></th>
-                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="issue : ${issues.content}">
+                <tr th:each="issue : ${issues.content}"
+                    th:data-url="@{/issues/edit/{id}(id=${issue.id})}"
+                    ondblclick="window.location.href=this.getAttribute('data-url')"
+                    style="cursor: pointer;">
                     <td th:text="${issue.id}"></td>
                     <td th:text="${issue.pos.name}"></td>
                     <td th:text="${issue.createdBy.name}"></td>
@@ -107,11 +109,6 @@
                     </td>
                     <td th:text="${issue.assignedTo != null ? issue.assignedTo.value.displayName : '-'}"></td>
                     <td th:text="${issue.memo}" class="text-truncate" style="max-width: 150px;"></td>
-                    <td>
-                        <a th:href="@{/issues/edit/{id}(id=${issue.id})}" class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-pencil"></i> Edit
-                        </a>
-                    </td>
                 </tr>
                 <tr th:if="${issues.empty}">
                     <td colspan="8" class="text-center py-5 text-muted">

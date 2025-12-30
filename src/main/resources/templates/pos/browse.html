@@ -22,11 +22,13 @@
                     <th th:replace="~{fragments/tables :: sortHeader('brand', 'Brand', ${posPage}, '/pos/browse')}"></th>
                     <th th:replace="~{fragments/tables :: sortHeader('connectionType.value', 'Connection', ${posPage}, '/pos/browse')}"></th>
                     <th th:replace="~{fragments/tables :: sortHeader('issuesCount', 'Status', ${posPage}, '/pos/browse')}"></th>
-                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="pos : ${posPage.content}">
+                <tr th:each="pos : ${posPage.content}"
+                    th:data-url="@{/pos/edit/{id}(id=${pos.id})}"
+                    ondblclick="window.location.href=this.getAttribute('data-url')"
+                    style="cursor: pointer;">
                     <td th:text="${pos.name}"></td>
                     <td th:text="${pos.telephone}"></td>
                     <td th:text="${pos.cellphone}"></td>
@@ -41,11 +43,6 @@
                                 <span th:class="${count > 0 ? 'text-danger fw-bold' : 'text-success'}"
                                       th:text="${count > 0 ? (count + ' issues') : 'No issues'}">
                                 </span>
-                    </td>
-                    <td>
-                        <a th:href="@{/pos/edit/{id}(id=${pos.id})}" class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-pencil"></i> Edit
-                        </a>
                     </td>
                 </tr>
                 <tr th:if="${posPage.empty}">
