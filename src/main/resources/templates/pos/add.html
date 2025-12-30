@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(content=~{::div})}">
 <body>
 <div class="container-fluid" style="max-width: 900px;">
-    <h1 class="mb-4" th:text="${posDto instanceof T(com.iongroup.service.dto.SavePosDto) ? 'Edit POS' : 'Add POS'}">Save POS</h1>
+    <h1 class="mb-4" th:text="${posId != null ? 'Edit POS' : 'Add POS'}">Save POS</h1>
 
     <div class="card shadow-sm">
         <div class="card-body">
@@ -93,7 +93,7 @@
                 <div class="d-flex justify-content-end gap-2">
                     <a href="/pos/browse" class="btn btn-secondary">Cancel</a>
                     <button type="submit" class="btn btn-primary"
-                            th:text="${posDto instanceof T(com.iongroup.service.dto.SavePosDto) ? 'Update POS' : 'Create POS'}">
+                            th:text="${posId != null ? 'Update POS' : 'Create POS'}">
                         Save POS
                     </button>
                 </div>
