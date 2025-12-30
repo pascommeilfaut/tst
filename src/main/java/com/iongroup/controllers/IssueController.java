@@ -10,7 +10,6 @@ import com.iongroup.service.PosService;
 import com.iongroup.service.dto.CreateIssueDto;
 import com.iongroup.service.dto.UpdateIssueDto;
 import com.iongroup.service.mapper.IssueMapper;
-import com.iongroup.util.AuthUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -49,7 +48,7 @@ public class IssueController {
     @GetMapping("/add")
     public String addForm(@RequestParam(required = false) Integer selectedPosId,
                           @RequestParam(required = false) String searchTerm,
-                          @PageableDefault(size = 10) Pageable pageable,
+                          @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                           Model model) {
 
         if (selectedPosId != null) {
@@ -113,7 +112,6 @@ public class IssueController {
         model.addAttribute("issue", dto);
         model.addAttribute("issueId", id);
         model.addAttribute("showSearch", false);
-        model.addAttribute("logs", issueService.findLogs(id));
 
         var issueEntity = issueService.findById(id).orElseThrow();
         model.addAttribute("selectedPos", issueEntity.getPos());
@@ -133,7 +131,6 @@ public class IssueController {
             model.addAttribute("selectedPos", issueEntity.getPos());
             model.addAttribute("showSearch", false);
             model.addAttribute("issueId", id);
-            model.addAttribute("logs", issueService.findLogs(id));
 
             populateFormAttributes(model);
             model.addAttribute("formAction", "/issues/update/%s".formatted(id));
