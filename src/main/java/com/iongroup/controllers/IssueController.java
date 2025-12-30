@@ -112,6 +112,7 @@ public class IssueController {
                 .orElseThrow(() -> new IllegalArgumentException("Issue not found: " + id));
 
         model.addAttribute("issue", dto);
+        model.addAttribute("issueId", id);
         model.addAttribute("showSearch", false);
 
         var issueEntity = issueService.findById(id).orElseThrow();
@@ -131,6 +132,7 @@ public class IssueController {
             var issueEntity = issueService.findById(id).orElseThrow();
             model.addAttribute("selectedPos", issueEntity.getPos());
             model.addAttribute("showSearch", false);
+            model.addAttribute("issueId", id);
 
             populateFormAttributes(model);
             model.addAttribute("formAction", "/issues/update/%s".formatted(id));
