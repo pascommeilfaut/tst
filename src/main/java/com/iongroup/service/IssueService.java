@@ -4,7 +4,9 @@ import com.iongroup.data.issue.IssueEntity;
 import com.iongroup.data.issue.IssueRepo;
 import com.iongroup.data.issue.status.IssueStatus;
 import com.iongroup.service.dto.CreateIssueDto;
+import com.iongroup.service.dto.UpdateIssueDto;
 import com.iongroup.service.mapper.IssueMapper;
+import com.iongroup.util.AuthUtils;
 import com.iongroup.util.TimeUtils;
 import com.iongroup.util.ValidationUtils;
 import lombok.NonNull;
@@ -79,19 +81,13 @@ public class IssueService {
 
     @Transactional(readOnly = true)
     @NonNull
-    public Optional<CreateIssueDto> findSaveIssueDtoById(@NonNull Integer id) {
-        IssueEntity entity = repo.findById(id).orElse(null);
-
-        if (entity == null) {
-            return Optional.empty();
-        }
-
-        return Optional.of(issueMapper.mapToDto(entity));
+    public Optional<IssueEntity> findById(@NonNull Integer id) {
+        return repo.findById(id);
     }
 
     @Transactional
     @NonNull
-    public IssueEntity update(@NonNull CreateIssueDto issueParams, @NonNull Integer id) {
+    public IssueEntity update(@NonNull UpdateIssueDto issueParams, @NonNull Integer id) {
         ValidationUtils.validate(issueParams);
 
         IssueEntity issue = repo.findById(id).orElseThrow(
@@ -99,6 +95,7 @@ public class IssueService {
         IssueEntity updatedIssue = issueMapper.mapToEntity(issueParams);
         updatedIssue.setId(issue.getId());
         updatedIssue.setCreatedAt(issue.getCreatedAt());
+        updatedIssue.setCreatedBy(issue.getCreatedBy());
         updatedIssue.setModifiedAt(TimeUtils.now());
 
         if (issue.getAssignedTo() == null && updatedIssue.getAssignedTo() != null) {
