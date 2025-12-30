@@ -26,7 +26,6 @@ public abstract class IssueMapper {
     @Mapping(source = "problemDescription", target = "description")
     @Mapping(source = "status", target = "status", qualifiedByName = "mapToIssueStatusEntity")
     @Mapping(source = "assignedTo", target = "assignedTo", qualifiedByName = "mapToUserTypeEntity")
-    @Mapping(source = "createdBy", target = "createdBy", qualifiedByName = "mapToUserEntity")
     public abstract IssueEntity mapToEntity(CreateIssueDto dto);
 
     @Mapping(source = "posId", target = "pos.id")
