@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
-@Secured("ROLE_ADMIN")
 public class UserController {
 
     private final UserService userService;
 
     @GetMapping("/browse")
+    @PreAuthorize("hasRole('ADMIN')")
     public String browse(@RequestParam(required = false) String searchTerm,
                          @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
                          Model model) {
@@ -32,6 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
     public String addForm(Model model) {
         model.addAttribute("userDto", new SaveUserDto());
         model.addAttribute("userTypes", UserType.values());
@@ -40,6 +41,7 @@ public class UserController {
     }
 
     @GetMapping("/edit/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String editForm(@PathVariable Integer id, Model model) {
         EditUserDto dto = userService.findEditUserDtoById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + id));
@@ -51,6 +53,7 @@ public class UserController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public String create(@Valid @ModelAttribute("userDto") SaveUserDto userDto,
                          BindingResult bindingResult,
                          Model model) {
@@ -71,6 +74,7 @@ public class UserController {
     }
 
     @PostMapping("/update")
+    @PreAuthorize("hasRole('ADMIN')")
     public String update(@Valid @ModelAttribute("userDto") EditUserDto userDto,
                          BindingResult bindingResult,
                          Model model) {
