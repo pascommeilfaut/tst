@@ -10,7 +10,6 @@ import com.iongroup.service.PosService;
 import com.iongroup.service.dto.CreateIssueDto;
 import com.iongroup.service.dto.UpdateIssueDto;
 import com.iongroup.service.mapper.IssueMapper;
-import com.iongroup.util.AuthUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -78,7 +77,6 @@ public class IssueController {
     public String save(@Valid @ModelAttribute("issue") CreateIssueDto issueDto,
                        BindingResult bindingResult,
                        Model model) {
-        issueDto.setCreatedBy(AuthUtils.getCurrentUser().getId());
         if (bindingResult.hasErrors()) {
             model.addAttribute("showSearch", false);
             if (issueDto.getPosId() != null) {
