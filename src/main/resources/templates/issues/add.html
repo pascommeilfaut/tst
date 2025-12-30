@@ -1,32 +1,27 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(content=~{::div})}">
 <body>
-<div class="container-fluid">
+<div class="container-fluid" style="max-width: 900px;">
     <h1 class="mb-4" th:text="${showSearch} ? 'New issue' : (${issueId} == null ? 'New issue' : 'Issue details')">New issue</h1>
 
     <div th:if="${showSearch}">
         <div class="card shadow-sm mb-4">
-            <div class="card-header bg-light">
-                <h5 class="card-title m-0">Search the POS</h5>
-            </div>
             <div class="card-body">
-                <form th:action="@{/issues/add}" method="get" class="d-flex" style="max-width: 500px;">
-                    <input type="text" name="searchTerm" class="form-control me-2"
+                <h5 class="card-title mb-3 text-muted">Search POS</h5>
+                <form th:action="@{/issues/add}" method="get" class="d-flex gap-2">
+                    <input type="text" name="searchTerm" class="form-control"
                            placeholder="Search by ID, Name, Phone..." th:value="${searchTerm}">
-                    <button class="btn btn-outline-primary" type="submit">Search</button>
-                    <a th:if="${not #strings.isEmpty(searchTerm)}" th:href="@{/issues/add}" class="btn btn-outline-secondary ms-2">Clear</a>
+                    <button class="btn btn-primary" type="submit">Search</button>
+                    <a th:if="${not #strings.isEmpty(searchTerm)}" th:href="@{/issues/add}" class="btn btn-outline-secondary">Clear</a>
                 </form>
             </div>
         </div>
 
         <div class="card shadow-sm">
-            <div class="card-header bg-light">
-                <h5 class="card-title m-0">Search results</h5>
-            </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0 table-bordered">
-                        <thead class="table-primary">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
                         <tr>
                             <th>POS Id</th>
                             <th>POS Name</th>
@@ -48,13 +43,13 @@
                             <td th:text="${pos.address}"></td>
                         </tr>
                         <tr th:if="${posList.empty}">
-                            <td colspan="5" class="text-center py-3 text-muted">No POS found.</td>
+                            <td colspan="5" class="text-center py-4 text-muted">No POS found.</td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div th:if="${posList.totalPages > 1}" class="card-footer">
+            <div th:if="${posList.totalPages > 1}" class="card-footer bg-white border-top-0">
                 <div th:replace="~{fragments/tables :: pagination(${posList}, '/issues/add')}"></div>
             </div>
         </div>
@@ -63,99 +58,100 @@
     <div th:unless="${showSearch}">
 
         <div class="card shadow-sm mb-4">
-            <div class="card-header bg-light">
-                <h5 class="card-title m-0" th:text="${issueId} == null ? 'Add issue for' : 'Issue object'">Add issue for</h5>
-            </div>
-            <div class="card-body p-0">
-                <table class="table table-bordered mb-0">
-                    <thead class="table-primary">
-                    <tr>
-                        <th>POS Id</th>
-                        <th>POS Name</th>
-                        <th>Telephone</th>
-                        <th>Cellphone</th>
-                        <th>Address</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:if="${selectedPos != null}">
-                        <td th:text="${selectedPos.id}"></td>
-                        <td th:text="${selectedPos.name}"></td>
-                        <td th:text="${selectedPos.telephone}"></td>
-                        <td th:text="${selectedPos.cellphone}"></td>
-                        <td th:text="${selectedPos.address}"></td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="card-body">
+                <h5 class="card-title mb-3 text-muted" th:text="${issueId} == null ? 'Target POS' : 'Issue Object'">Target POS</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>POS Id</th>
+                            <th>POS Name</th>
+                            <th>Telephone</th>
+                            <th>Cellphone</th>
+                            <th>Address</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${selectedPos != null}">
+                            <td th:text="${selectedPos.id}"></td>
+                            <td th:text="${selectedPos.name}"></td>
+                            <td th:text="${selectedPos.telephone}"></td>
+                            <td th:text="${selectedPos.cellphone}"></td>
+                            <td th:text="${selectedPos.address}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
         <div class="card shadow-sm">
-            <div class="card-header bg-light">
-                <h5 class="card-title m-0" th:text="${issueId} == null ? 'Add Issue' : 'Issue details'">Add Issue</h5>
-            </div>
             <div class="card-body">
                 <form th:action="@{${formAction}}" th:object="${issue}" method="post">
                     <input type="hidden" th:field="*{posId}">
 
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-2">
-                            <label for="issueTypeId" class="form-label fw-bold">Issue type</label>
+                    <h5 class="mb-3 text-muted">Issue Information</h5>
+
+                    <div class="row mb-3">
+                        <div class="col-md-2 mb-3">
+                            <label for="issueTypeId" class="form-label">Issue type <span class="text-danger">*</span></label>
                             <select class="form-select" id="issueTypeId" th:field="*{issueTypeId}" required>
                                 <option th:each="type : ${issueTypes}" th:value="${type.id}" th:text="${type.name}"></option>
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label for="subTypeId" class="form-label fw-bold">Subclass</label>
+                        <div class="col-md-3 mb-3">
+                            <label for="subTypeId" class="form-label">Subclass <span class="text-danger">*</span></label>
                             <select class="form-select" id="subTypeId" th:field="*{subTypeId}" required>
                                 <option value=""></option>
                                 <option th:each="sub : ${subTypes}" th:value="${sub.id}" th:text="${sub.name}"></option>
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label for="problem" class="form-label fw-bold">Problem</label>
+                        <div class="col-md-3 mb-3">
+                            <label for="problem" class="form-label">Problem <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="problem" th:field="*{problem}" required>
                         </div>
-                        <div class="col-md-2">
-                            <label for="priority" class="form-label fw-bold">Priority</label>
+                        <div class="col-md-2 mb-3">
+                            <label for="priority" class="form-label">Priority <span class="text-danger">*</span></label>
                             <select class="form-select" id="priority" th:field="*{priority}" required>
                                 <option th:each="p : ${priorities}" th:value="${p}" th:text="${p.displayName}"></option>
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <label for="status" class="form-label fw-bold">Status</label>
+                        <div class="col-md-2 mb-3">
+                            <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
                             <select class="form-select" id="status" th:field="*{status}" required>
                                 <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.displayName}"></option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <label for="problemDescription" class="form-label fw-bold">Problem description</label>
+                    <h5 class="mb-3 text-muted">Details & Resolution</h5>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="problemDescription" class="form-label">Problem description <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="problemDescription" th:field="*{problemDescription}" rows="5" required></textarea>
                         </div>
-                        <div class="col-md-4">
-                            <label for="solution" class="form-label fw-bold">Solution</label>
+                        <div class="col-md-4 mb-3">
+                            <label for="solution" class="form-label">Solution</label>
                             <textarea class="form-control" id="solution" th:field="*{solution}" rows="5"></textarea>
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
-                                <label for="assignedTo" class="form-label fw-bold">Assigned To</label>
+                                <label for="assignedTo" class="form-label">Assigned To <span class="text-danger">*</span></label>
                                 <select class="form-select" id="assignedTo" th:field="*{assignedTo}" required>
                                     <option th:each="u : ${userTypes}" th:value="${u.id}" th:text="${u.displayName}"></option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="memo" class="form-label fw-bold">Memo</label>
+                                <label for="memo" class="form-label">Memo</label>
                                 <input type="text" class="form-control" id="memo" th:field="*{memo}">
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-4">
-                        <button type="submit" class="btn btn-primary" th:text="${issueId} == null ? 'Open issue' : 'Save changes'">Open issue</button>
+                    <div class="d-flex justify-content-end gap-2 mt-4">
                         <a href="/issues/browse" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary" th:text="${issueId} == null ? 'Create Issue' : 'Update Issue'">Save</button>
                     </div>
                 </form>
             </div>
