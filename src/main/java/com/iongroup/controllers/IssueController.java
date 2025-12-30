@@ -2,6 +2,7 @@ package com.iongroup.controllers;
 
 import com.iongroup.data.issue.IssuePriority;
 import com.iongroup.data.issue.status.IssueStatus;
+import com.iongroup.data.pos.PosEntity;
 import com.iongroup.data.user.UserType;
 import com.iongroup.service.IssueService;
 import com.iongroup.service.IssueTypeService;
@@ -46,10 +47,30 @@ public class IssueController {
     }
 
     @GetMapping("/add")
-    public String addForm(Model model) {
-        model.addAttribute("issue", new CreateIssueDto());
-        populateFormAttributes(model);
-        model.addAttribute("formAction", "/issues/save");
+    public String addForm(@RequestParam(required = false) Integer selectedPosId,
+                          @RequestParam(required = false) String searchTerm,
+                          @PageableDefault(size = 10) Pageable pageable,
+                          Model model) {
+
+        if (selectedPosId != null) {
+            PosEntity pos = posService.findById(selectedPosId).orElseThrow(() -> new IllegalArgumentException("POS not found"));
+
+            CreateIssueDto dto = new CreateIssueDto();
+            dto.setPosId(pos.getId());
+            dto.setStatus(IssueStatus.NEW);
+
+            model.addAttribute("issue", dto);
+            model.addAttribute("selectedPos", pos);
+            model.addAttribute("showSearch", false);
+            populateFormAttributes(model);
+            model.addAttribute("formAction", "/issues/save");
+        } else {
+            model.addAttribute("showSearch", true);
+            model.addAttribute("searchTerm", searchTerm);
+
+            model.addAttribute("posList", posService.findByFilter(searchTerm, pageable));
+        }
+
         return "issues/add";
     }
 
@@ -59,6 +80,10 @@ public class IssueController {
                        Model model) {
         issueDto.setCreatedBy(AuthUtils.getCurrentUser().getId());
         if (bindingResult.hasErrors()) {
+            model.addAttribute("showSearch", false);
+            if (issueDto.getPosId() != null) {
+                model.addAttribute("selectedPos", posService.findById(issueDto.getPosId()).orElse(null));
+            }
             populateFormAttributes(model);
             model.addAttribute("formAction", "/issues/save");
             return "issues/add";
@@ -68,6 +93,10 @@ public class IssueController {
             issueService.create(issueDto);
         } catch (IllegalArgumentException e) {
             bindingResult.reject("globalError", e.getMessage());
+            model.addAttribute("showSearch", false);
+            if (issueDto.getPosId() != null) {
+                model.addAttribute("selectedPos", posService.findById(issueDto.getPosId()).orElse(null));
+            }
             populateFormAttributes(model);
             model.addAttribute("formAction", "/issues/save");
             return "issues/add";
@@ -83,6 +112,11 @@ public class IssueController {
                 .orElseThrow(() -> new IllegalArgumentException("Issue not found: " + id));
 
         model.addAttribute("issue", dto);
+        model.addAttribute("showSearch", false);
+
+        var issueEntity = issueService.findById(id).orElseThrow();
+        model.addAttribute("selectedPos", issueEntity.getPos());
+
         populateFormAttributes(model);
         model.addAttribute("formAction", "/issues/update/%s".formatted(id));
         return "issues/add";
@@ -90,18 +124,23 @@ public class IssueController {
 
     @PostMapping("/update/{id}")
     public String update(@PathVariable Integer id,
-                         @Valid @ModelAttribute("posDto") UpdateIssueDto issueDto,
+                         @Valid @ModelAttribute("issue") UpdateIssueDto issueDto,
                          BindingResult bindingResult,
                          Model model) {
         if (bindingResult.hasErrors()) {
-            return editForm(id, model);
+            var issueEntity = issueService.findById(id).orElseThrow();
+            model.addAttribute("selectedPos", issueEntity.getPos());
+            model.addAttribute("showSearch", false);
+
+            populateFormAttributes(model);
+            model.addAttribute("formAction", "/issues/update/%s".formatted(id));
+            return "issues/add";
         }
         issueService.update(issueDto, id);
         return "redirect:/issues/browse";
     }
 
     private void populateFormAttributes(Model model) {
-        model.addAttribute("posList", posService.findByFilter(null, Pageable.unpaged()).getContent());
         model.addAttribute("issueTypes", issueTypeService.findAllParents(Pageable.unpaged()).getContent());
         model.addAttribute("subTypes", issueTypeService.findAllSubTypes(Pageable.unpaged()).getContent());
         model.addAttribute("priorities", IssuePriority.values());
