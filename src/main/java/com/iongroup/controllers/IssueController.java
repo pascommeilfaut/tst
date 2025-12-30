@@ -112,6 +112,7 @@ public class IssueController {
         model.addAttribute("issue", dto);
         model.addAttribute("issueId", id);
         model.addAttribute("showSearch", false);
+        model.addAttribute("logs", issueService.findLogs(id));
 
         var issueEntity = issueService.findById(id).orElseThrow();
         model.addAttribute("selectedPos", issueEntity.getPos());
@@ -131,6 +132,7 @@ public class IssueController {
             model.addAttribute("selectedPos", issueEntity.getPos());
             model.addAttribute("showSearch", false);
             model.addAttribute("issueId", id);
+            model.addAttribute("logs", issueService.findLogs(id));
 
             populateFormAttributes(model);
             model.addAttribute("formAction", "/issues/update/%s".formatted(id));

@@ -85,7 +85,7 @@
             </div>
         </div>
 
-        <div class="card shadow-sm">
+        <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <form th:action="@{${formAction}}" th:object="${issue}" method="post">
                     <input type="hidden" th:field="*{posId}">
@@ -154,6 +154,35 @@
                         <button type="submit" class="btn btn-primary" th:text="${issueId} == null ? 'Create Issue' : 'Update Issue'">Save</button>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4" th:if="${issueId != null}">
+            <div class="card-body">
+                <h5 class="card-title mb-3 text-muted">History</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>Info</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="log : ${logs}">
+                            <td th:text="${#temporals.format(log.dateTime, 'yyyy-MM-dd HH:mm')}"></td>
+                            <td th:text="${log.actor.name}"></td>
+                            <td th:text="${log.action}"></td>
+                            <td th:text="${log.notes}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(logs)}">
+                            <td colspan="4" class="text-center py-3 text-muted">No history available.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
