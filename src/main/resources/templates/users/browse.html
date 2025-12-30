@@ -18,11 +18,13 @@
                     <th th:replace="~{fragments/tables :: sortHeader('login', 'Login', ${users}, '/users/browse')}"></th>
                     <th th:replace="~{fragments/tables :: sortHeader('telephone', 'Telephone', ${users}, '/users/browse')}"></th>
                     <th th:replace="~{fragments/tables :: sortHeader('type.value', 'User Type', ${users}, '/users/browse')}"></th>
-                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="user : ${users.content}">
+                <tr th:each="user : ${users.content}"
+                    th:data-url="@{/users/edit/{id}(id=${user.id})}"
+                    ondblclick="window.location.href=this.getAttribute('data-url')"
+                    style="cursor: pointer;">
                     <td th:text="${user.name}"></td>
                     <td th:text="${user.email}"></td>
                     <td th:text="${user.login}"></td>
@@ -30,14 +32,9 @@
                     <td>
                         <span class="badge bg-secondary" th:text="${user.type.value.displayName}"></span>
                     </td>
-                    <td>
-                        <a th:href="@{/users/edit/{id}(id=${user.id})}" class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-pencil"></i> Edit
-                        </a>
-                    </td>
                 </tr>
                 <tr th:if="${users.empty}">
-                    <td colspan="6" class="text-center py-4 text-muted">No users found.</td>
+                    <td colspan="5" class="text-center py-4 text-muted">No users found.</td>
                 </tr>
                 </tbody>
             </table>
