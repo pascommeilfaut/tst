@@ -13,7 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CreateIssueDto {
 
-    private Integer id;
     @NotNull private Integer posId;
     @NotNull private Integer issueTypeId;
     @NotNull private Integer subTypeId;
