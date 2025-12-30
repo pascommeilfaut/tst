@@ -10,7 +10,7 @@
                 <h5 class="card-title mb-3 text-muted">Search POS</h5>
                 <form th:action="@{/issues/add}" method="get" class="d-flex gap-2">
                     <input type="text" name="searchTerm" class="form-control"
-                           placeholder="Search by ID, Name, Phone..." th:value="${searchTerm}">
+                           placeholder="Search..." th:value="${searchTerm}">
                     <button class="btn btn-primary" type="submit">Search</button>
                     <a th:if="${not #strings.isEmpty(searchTerm)}" th:href="@{/issues/add}" class="btn btn-outline-secondary">Clear</a>
                 </form>
