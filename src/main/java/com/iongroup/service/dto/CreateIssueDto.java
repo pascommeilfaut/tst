@@ -22,7 +22,6 @@ public class CreateIssueDto {
     @Size(max = 10240) private String problemDescription;
     @Size(max = 10240) private String solution;
     private Integer assignedTo;
-    @NotNull private Integer createdBy;
     @Size(max = 255) private String memo;
 
 }

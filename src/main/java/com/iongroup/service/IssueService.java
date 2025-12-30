@@ -33,6 +33,7 @@ public class IssueService {
         IssueEntity issueEntity = issueMapper.mapToEntity(issueParams);
 
         issueEntity.setCreatedAt(TimeUtils.now());
+        issueEntity.setCreatedBy(AuthUtils.getCurrentUser());
 
         if (issueParams.getAssignedTo() != null) {
             issueEntity.setAssignedAt(TimeUtils.now());
