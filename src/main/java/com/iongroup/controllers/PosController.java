@@ -44,13 +44,17 @@ public class PosController {
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public String editForm(@PathVariable Integer id, Model model) {
-        SavePosDto dto = posService.findSavePosDtoById(id)
-                .orElseThrow(() -> new IllegalArgumentException("POS not found: " + id));
+        try {
+            SavePosDto dto = posService.findSavePosDtoById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("POS not found: " + id));
 
-        model.addAttribute("posDto", dto);
-        populateFormAttributes(model);
-        model.addAttribute("formAction", "/pos/update/%s".formatted(id));
-        return "pos/add";
+            model.addAttribute("posDto", dto);
+            populateFormAttributes(model);
+            model.addAttribute("formAction", "/pos/update/%s".formatted(id));
+            return "pos/add";
+        } catch (IllegalArgumentException e) {
+            return "redirect:/pos/browse";
+        }
     }
 
     @PostMapping("/save")
@@ -62,7 +66,15 @@ public class PosController {
             populateFormAttributes(model);
             return "pos/add";
         }
-        posService.create(posDto);
+
+        try {
+            posService.create(posDto);
+        } catch (IllegalArgumentException e) {
+            bindingResult.reject("globalError", e.getMessage());
+            populateFormAttributes(model);
+            return "pos/add";
+        }
+
         return "redirect:/pos/browse";
     }
 
@@ -76,7 +88,16 @@ public class PosController {
             populateFormAttributes(model);
             return "pos/edit/%s".formatted(id);
         }
-        posService.update(posDto, id);
+
+        try {
+            posService.update(posDto, id);
+        } catch (IllegalArgumentException e) {
+            bindingResult.reject("globalError", e.getMessage());
+            populateFormAttributes(model);
+            model.addAttribute("formAction", "/pos/update/%s".formatted(id));
+            return "pos/add";
+        }
+
         return "redirect:/pos/browse";
     }
 

@@ -7,12 +7,14 @@ import com.iongroup.service.IssueService;
 import com.iongroup.service.IssueTypeService;
 import com.iongroup.service.PosService;
 import com.iongroup.service.dto.CreateIssueDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -42,22 +44,39 @@ public class IssueController {
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("issue", new CreateIssueDto());
+        populateFormAttributes(model);
+        model.addAttribute("formAction", "/issues/save");
+        return "issues/add";
+    }
 
+    @PostMapping("/save")
+    public String save(@Valid @ModelAttribute("issue") CreateIssueDto issueDto,
+                       BindingResult bindingResult,
+                       Model model) {
+        if (bindingResult.hasErrors()) {
+            populateFormAttributes(model);
+            model.addAttribute("formAction", "/issues/save");
+            return "issues/add";
+        }
+
+        try {
+            issueService.create(issueDto);
+        } catch (IllegalArgumentException e) {
+            bindingResult.reject("globalError", e.getMessage());
+            populateFormAttributes(model);
+            model.addAttribute("formAction", "/issues/save");
+            return "issues/add";
+        }
+
+        return "redirect:/issues/browse";
+    }
+
+    private void populateFormAttributes(Model model) {
         model.addAttribute("posList", posService.findByFilter(null, Pageable.unpaged()).getContent());
         model.addAttribute("issueTypes", issueTypeService.findAllParents(Pageable.unpaged()).getContent());
         model.addAttribute("subTypes", issueTypeService.findAllSubTypes(Pageable.unpaged()).getContent());
         model.addAttribute("priorities", IssuePriority.values());
         model.addAttribute("statuses", IssueStatus.values());
         model.addAttribute("userTypes", UserType.values());
-
-        model.addAttribute("formAction", "/issues/save");
-
-        return "issues/add";
-    }
-
-    @PostMapping("/save")
-    public String save(@ModelAttribute CreateIssueDto issueDto) {
-        issueService.create(issueDto);
-        return "redirect:/issues/browse";
     }
 }
