@@ -2,11 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: html(content=~{::div})}">
 <body>
 <div class="container-fluid" style="max-width: 900px;">
-    <h1 class="mb-4">Add Issue</h1>
+    <h1 class="mb-4">Save issue</h1>
 
     <div class="card shadow-sm">
         <div class="card-body">
-            <form th:action="@{/issues/save}" th:object="${issue}" method="post">
+            <form th:action="@{${formAction}}" th:object="${issue}" method="post">
 
                 <div class="mb-3">
                     <label for="posId" class="form-label">Select POS <span class="text-danger">*</span></label>
@@ -84,7 +84,7 @@
 
                 <div class="d-flex justify-content-end gap-2">
                     <a href="/issues/browse" class="btn btn-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Add Issue</button>
+                    <button type="submit" class="btn btn-primary">Save issue</button>
                 </div>
             </form>
         </div>
