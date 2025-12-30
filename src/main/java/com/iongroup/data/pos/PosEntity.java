@@ -59,6 +59,7 @@ public class PosEntity extends BaseEntity {
     @Column(name = "insert_date", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Basic(fetch = FetchType.LAZY)
     @Formula("(select count(1) from issues i where i.id_pos = id)")
     private Integer issuesCount;
 
