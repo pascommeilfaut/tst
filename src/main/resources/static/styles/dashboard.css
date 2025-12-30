@@ -69,6 +69,7 @@
     border-radius: 0 0 5px 5px;
     background: #ffffff;
     cursor: pointer;
+    text-decoration: none;
 }
 .stat-card.red .stat-link {
     color: #d9534f;

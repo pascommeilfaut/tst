@@ -21,20 +21,18 @@
 
     <div style="display: none">
         <div th:fragment="card" th:classappend="${color}" class="stat-card">
-            <a class="page-link" th:href="@{/issues/browse(status=${status}, page=0, sort='desc')}">
-                <div class="stat-top">
-                    <svg class="stat-icon">
-                        <use th:href="@{${'/icons/' + icon_name}}"/>
-                    </svg>
-                    <span th:text="${value}" class="stat-number">0</span>
-                </div>
-                <span th:text="${caption}" class="stat-caption"></span>
-                <div class="stat-link">
-                    <span>View details</span>
-                    <svg class="stat-link-icon">
-                        <use th:href="@{/icons/arrow_circle_right_o.svg}"/>
-                    </svg>
-                </div>
+            <div class="stat-top">
+                <svg class="stat-icon">
+                    <use th:href="@{${'/icons/' + icon_name}}"/>
+                </svg>
+                <span th:text="${value}" class="stat-number">0</span>
+            </div>
+            <span th:text="${caption}" class="stat-caption"></span>
+            <a th:href="@{/issues/browse(status=${status}, page=0, sort='desc')}" class="stat-link">
+                <span>View details</span>
+                <svg class="stat-link-icon">
+                    <use th:href="@{/icons/arrow_circle_right_o.svg}"/>
+                </svg>
             </a>
         </div>
     </div>
