@@ -86,7 +86,7 @@ public class PosController {
                          Model model) {
         if (bindingResult.hasErrors()) {
             populateFormAttributes(model);
-            return "pos/edit/%s".formatted(id);
+            return "pos/add";
         }
 
         try {
