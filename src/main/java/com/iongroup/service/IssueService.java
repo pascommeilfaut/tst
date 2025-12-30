@@ -2,6 +2,9 @@ package com.iongroup.service;
 
 import com.iongroup.data.issue.IssueEntity;
 import com.iongroup.data.issue.IssueRepo;
+import com.iongroup.data.issue.log.Action;
+import com.iongroup.data.issue.log.IssueLogEntity;
+import com.iongroup.data.issue.log.IssueLogRepo;
 import com.iongroup.data.issue.status.IssueStatus;
 import com.iongroup.service.dto.CreateIssueDto;
 import com.iongroup.service.dto.UpdateIssueDto;
@@ -16,7 +19,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -24,22 +29,33 @@ import java.util.Optional;
 public class IssueService {
 
     private final IssueRepo repo;
+    private final IssueLogRepo logRepo;
     private final IssueMapper issueMapper;
 
     @NonNull
+    @Transactional
     public IssueEntity create(@NonNull CreateIssueDto issueParams) {
         ValidationUtils.validate(issueParams);
 
         IssueEntity issueEntity = issueMapper.mapToEntity(issueParams);
 
         issueEntity.setCreatedAt(TimeUtils.now());
-        issueEntity.setCreatedBy(AuthUtils.getCurrentUser());
 
         if (issueParams.getAssignedTo() != null) {
             issueEntity.setAssignedAt(TimeUtils.now());
         }
 
-        return repo.save(issueEntity);
+        IssueEntity savedIssue = repo.save(issueEntity);
+
+        IssueLogEntity log = new IssueLogEntity();
+        log.setIssue(savedIssue);
+        log.setDateTime(TimeUtils.now());
+        log.setAction(Action.CREATED);
+        log.setActor(AuthUtils.getCurrentUser());
+        log.setNotes("Issue created");
+        logRepo.save(log);
+
+        return savedIssue;
     }
 
     @NonNull
@@ -86,6 +102,11 @@ public class IssueService {
         return repo.findById(id);
     }
 
+    @NonNull
+    public List<IssueLogEntity> findLogs(@NonNull Integer issueId) {
+        return logRepo.findByIssueId(issueId);
+    }
+
     @Transactional
     @NonNull
     public IssueEntity update(@NonNull UpdateIssueDto issueParams, @NonNull Integer id) {
@@ -93,7 +114,30 @@ public class IssueService {
 
         IssueEntity issue = repo.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Issue with id %s does not exist".formatted(id)));
+
         IssueEntity updatedIssue = issueMapper.mapToEntity(issueParams);
+
+        StringBuilder notes = new StringBuilder();
+
+        if (issue.getStatus() != null && issueParams.getStatus() != null &&
+                issue.getStatus().getValue() != issueParams.getStatus()) {
+            notes.append("Status changed: ")
+                    .append(issue.getStatus().getValue().getDisplayName())
+                    .append(" -> ")
+                    .append(issueParams.getStatus().getDisplayName())
+                    .append(". ");
+        }
+
+        Integer oldAssignedTo = issue.getAssignedTo() != null ? issue.getAssignedTo().getId() : null;
+        Integer newAssignedTo = issueParams.getAssignedTo();
+        if (!Objects.equals(oldAssignedTo, newAssignedTo)) {
+            notes.append("Assignment changed. ");
+        }
+
+        if (notes.isEmpty()) {
+            notes.append("Details updated.");
+        }
+
         updatedIssue.setId(issue.getId());
         updatedIssue.setCreatedAt(issue.getCreatedAt());
         updatedIssue.setCreatedBy(issue.getCreatedBy());
@@ -103,7 +147,14 @@ public class IssueService {
             updatedIssue.setAssignedAt(TimeUtils.now());
         }
 
+        IssueLogEntity log = new IssueLogEntity();
+        log.setIssue(issue);
+        log.setDateTime(TimeUtils.now());
+        log.setAction(Action.UPDATED);
+        log.setActor(AuthUtils.getCurrentUser());
+        log.setNotes(notes.toString().trim());
+        logRepo.save(log);
+
         return repo.save(updatedIssue);
     }
-
 }
