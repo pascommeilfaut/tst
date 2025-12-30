@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -57,4 +58,8 @@ public class PosEntity extends BaseEntity {
 
     @Column(name = "insert_date", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Formula("(select count(1) from issues i where i.id_pos = id)")
+    private Integer issuesCount;
+
 }

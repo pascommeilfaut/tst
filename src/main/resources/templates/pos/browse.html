@@ -21,7 +21,7 @@
                     <th th:replace="~{fragments/tables :: sortHeader('model', 'Model', ${posPage}, '/pos/browse')}"></th>
                     <th th:replace="~{fragments/tables :: sortHeader('brand', 'Brand', ${posPage}, '/pos/browse')}"></th>
                     <th th:replace="~{fragments/tables :: sortHeader('connectionType.value', 'Connection', ${posPage}, '/pos/browse')}"></th>
-                    <th>Status</th>
+                    <th th:replace="~{fragments/tables :: sortHeader('issuesCount', 'Status', ${posPage}, '/pos/browse')}"></th>
                     <th>Action</th>
                 </tr>
                 </thead>
