@@ -28,6 +28,10 @@ public class UserService {
     public UserEntity create(@NonNull SaveUserDto userParams) {
         ValidationUtils.validate(userParams);
 
+        if (repo.findByLogin(userParams.getLogin()).isPresent()) {
+            throw new IllegalArgumentException("User with login '%s' already exists".formatted(userParams.getLogin()));
+        }
+
         if (userParams.getRawPassword() == null || userParams.getRawPassword().isBlank()) {
             throw new IllegalArgumentException("Password must not be null or blank");
         }
@@ -45,6 +49,12 @@ public class UserService {
 
         UserEntity user = repo.findById(userParams.getId())
                 .orElseThrow(() -> new IllegalArgumentException("User with id " + userParams.getId() + " does not exist"));
+
+        repo.findByLogin(userParams.getLogin())
+                .filter(found -> !found.getId().equals(user.getId()))
+                .ifPresent(found -> {
+                    throw new IllegalArgumentException("User with login '%s' already exists".formatted(userParams.getLogin()));
+                });
 
         userMapper.updateEntityFromEditDto(userParams, user);
 
